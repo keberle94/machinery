@@ -9,10 +9,12 @@
     <script src="assets/ICanHaz.min.js" ></script>
 
     <script id="body" type="text/html">
-      <h1>Machinery</h1>
+      <h1><%= description.name %> - Machinery</h1>
       {{>os}}
       {{>packages}}
       {{>users}}
+      {{>groups}}
+      {{>repositories}}
       {{>unmanaged-files}}
     </script>
 
@@ -108,6 +110,66 @@
         </tbody>
       </table>
       {{/unmanaged_files.files.length}}
+    </script>
+
+    <script id="groups" type="text/html">
+      {{#groups.length}}
+        <h2>Groups</h2>
+          <table>
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>GID</th>
+                <th>Password</th>
+                <th>Users</th>
+              </tr>
+            </thead>
+          <tbody>
+            {{#groups}}
+              <tr>
+                <td>{{name}}</td>
+                <td>{{gid}}</td>
+                <td>{{password}}</td>
+                <td>{{users}}</td>
+              </tr>
+           {{/groups}}
+          </tbody>
+        </table>
+      {{/groups.length}}
+    </script>
+
+    <script id="repositories" class="partial" type="text/html">
+      {{#repositories.length}}
+        <h2>Repositories</h2>
+        <table>
+          <thead>
+            <tr>
+              <td>Name<td>
+              <td>Alias<td>
+              <td>Type<td>
+              <td>URL<td>
+              <td>Enabled<td>
+              <td>Autorefresh<td>
+              <td>GPG Check<td>
+              <td>Priority<td>
+            </tr>
+          </thead>
+          <tbody>
+            {{#repositories}}
+              <tr>
+                <td>{{name}}<td>
+                <td>{{alias}}<td>
+                <td>{{type}}<td>
+                <td>{{url}}<td>
+                <td>{{enabled}}<td>
+                <td>{{autorefresh}}<td>
+                <td>{{gpgcheck}}<td>
+                <td>{{priority}}<td>
+              <tr>
+            {{/repositories}}
+          <tbody>
+        </table>
+      {{/repositories.length}}
     </script>
 
     <script type="text/javascript">
