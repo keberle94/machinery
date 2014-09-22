@@ -10,6 +10,7 @@
       {{>os}}
       {{>packages}}
       {{>users}}
+      {{>repositories}}
     </script>
 
     <script id="os" class="partial" type="text/html">
@@ -83,6 +84,40 @@
           </tbody>
         </table>
       {{/users.length}}
+    </script>
+
+    <script id="repositories" class="partial" type="text/html">
+      {{#repositories.length}}
+        <h2>Repositories</h2>
+        <table>
+          <thead>
+            <tr>
+              <td>Name<td>
+              <td>Alias<td>
+              <td>Type<td>
+              <td>URL<td>
+              <td>Enabled<td>
+              <td>Autorefresh<td>
+              <td>GPG Check<td>
+              <td>Priority<td>
+            </tr>
+          </thead>
+          <tbody>
+            {{#repositories}}
+              <tr>
+                <td>{{name}}<td>
+                <td>{{alias}}<td>
+                <td>{{type}}<td>
+                <td>{{url}}<td>
+                <td>{{enabled}}<td>
+                <td>{{autorefresh}}<td>
+                <td>{{gpgcheck}}<td>
+                <td>{{priority}}<td>
+              <tr>
+            {{/repositories}}
+          <tbody>
+        </table>
+      {{/repositories.length}}
     </script>
 
     <script type="text/javascript">
