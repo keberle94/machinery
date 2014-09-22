@@ -120,7 +120,7 @@ class SystemDescription < Machinery::Object
     end
   end
 
-  def to_json
+  def to_hash
     meta = {}
     meta["format_version"] = self.format_version if self.format_version
 
@@ -130,8 +130,11 @@ class SystemDescription < Machinery::Object
 
     hash = as_json
     hash["meta"] = meta unless meta.empty?
+    hash
+  end
 
-    JSON.pretty_generate(hash)
+  def to_json
+    JSON.pretty_generate(to_hash)
   end
 
   def scopes
