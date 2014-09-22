@@ -19,17 +19,23 @@
     </script>
 
     <script id="os" class="partial" type="text/html">
-      <h2>Operating system</h2>
-      <table>
-        <tr>
-          <th>Name</th>
-          <td>{{os.name}}<td>
-        <tr>
-        <tr>
-          <th>Architecture</th>
-          <td>{{os.architecture}}<td>
-        <tr>
-      </table>
+      {{#os}}
+        <h2>Operating system</h2>
+        <table>
+          <tr>
+            <th>Name</th>
+            <td>{{os.name}}</td>
+          </tr>
+          <tr>
+            <th>Version</th>
+            <td>{{os.version}}</td>
+          </tr>
+          <tr>
+            <th>Architecture</th>
+            <td>{{os.architecture}}</td>
+          </tr>
+        </table>
+      {{/os}}
     </script>
 
     <script id="packages" class="partial" type="text/html">
