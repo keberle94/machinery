@@ -8,6 +8,7 @@
     <script id="body" type="text/html">
       <h1>Machinery</h1>
       {{>os}}
+      {{>packages}}
     </script>
 
     <script id="os" class="partial" type="text/html">
@@ -22,6 +23,35 @@
           <td>{{os.architecture}}<td>
         <tr>
       </table>
+    </script>
+
+    <script id="packages" class="partial" type="text/html">
+      {{#packages.length}}
+      <h2>Packages</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Version</th>
+            <th>Release</th>
+            <th>Arch</th>
+            <th>Vendor</th>
+            <th>Checksum</th>
+          </tr>
+        </thead>
+        <tbody>
+          {{#packages}}
+            <tr>
+              <td>{{name}}</td>
+              <td>{{version}}</td>
+              <td>{{release}}</td>
+              <td>{{arch}}</td>
+              <td>{{vendor}}</td>
+              <td>{{checksum}}</td>
+          {{/packages}}
+        </tbody>
+      </table>
+      {{/packages.length}}
     </script>
 
     <script type="text/javascript">
