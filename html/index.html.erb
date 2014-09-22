@@ -13,6 +13,7 @@
       {{>os}}
       {{>packages}}
       {{>users}}
+      {{>unmanaged-files}}
     </script>
 
     <script id="os" class="partial" type="text/html">
@@ -86,6 +87,27 @@
           </tbody>
         </table>
       {{/users.length}}
+    </script>
+
+    <script id="unmanaged-files" class="partial" type="text/html">
+      {{#unmanaged_files.files.length}}
+      <h2>Unmanaged Files</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Type</th>
+          </tr>
+        </thead>
+        <tbody>
+          {{#unmanaged_files.files}}
+            <tr>
+              <td>{{name}}</td>
+              <td>{{type}}</td>
+          {{/unmanaged_files.files}}
+        </tbody>
+      </table>
+      {{/unmanaged_files.files.length}}
     </script>
 
     <script type="text/javascript">
