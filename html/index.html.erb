@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Machinery - System Description</title>
+    <script src="assets/jquery-2.1.1.min.js"></script>
+    <script src="assets/ICanHaz.min.js" ></script>
+
+    <script id="body" type="text/html">
+      <h1>Machinery</h1>
+      {{>os}}
+    </script>
+
+    <script id="os" class="partial" type="text/html">
+      <h2>Operating system</h2>
+      <table>
+        <tr>
+          <th>Name</th>
+          <td>{{os.name}}<td>
+        <tr>
+        <tr>
+          <th>Architecture</th>
+          <td>{{os.architecture}}<td>
+        <tr>
+      </table>
+    </script>
+
+    <script type="text/javascript">
+      var description = JSON.parse('<%= description.to_hash.to_json %>')
+    </script>
+
+    <script type="text/javascript">
+      $(document).ready(function () {
+        $("body").html(ich.body(description))
+      })
+    </script>
+  </head>
+  <body>
+  </body>
+</html>

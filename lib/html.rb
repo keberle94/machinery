@@ -17,5 +17,12 @@
 
 class Html
   def self.generate(description)
+    template = ERB.new(
+      File.read(File.join(Machinery::ROOT, "html", "index.html.erb"))
+    )
+    target = description.store.description_path(description.name)
+
+    FileUtils.cp_r(File.join(Machinery::ROOT, "html", "assets"), target)
+    File.write(File.join(target, "index.html"), template.result(binding))
   end
 end
