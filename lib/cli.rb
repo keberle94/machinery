@@ -532,4 +532,20 @@ class Cli
       task.upgrade(store, name, :all => options[:all])
     end
   end
+
+  desc "Generate an HTML view for a system description"
+  long_desc <<-LONGDESC
+    Generates an HTML view for a system description.
+  LONGDESC
+  arg "NAME"
+  command "generate-html" do |c|
+    c.action do |global_options,options,args|
+      name = shift_arg(args, "NAME")
+
+      store = SystemDescriptionStore.new
+      description = store.load(name)
+      task = GenerateHtmlTask.new
+      task.generate(description)
+    end
+  end
 end
