@@ -56,4 +56,13 @@ describe ShowTask, "#show" do
     }
     show_task.show(description_with_packages, [scope], :no_pager => true)
   end
+
+  it "runs opens the system description in the web browser" do
+    expect(Machinery).to receive(:check_package).with("xdg-utils")
+    html_path = SystemDescriptionStore.new.html_path(system_description.name)
+    expect(Cheetah).to receive(:run).with("xdg-open", html_path)
+
+    show_task.show(system_description, ["foo"], :show_html => true)
+  end
+
 end

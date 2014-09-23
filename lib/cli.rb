@@ -476,6 +476,8 @@ class Cli
       :desc => "Pipe output into a pager"
     c.switch "show-diffs", :required => false, :negatable => false,
       :desc => "Show diffs of configuration files changes."
+    c.switch "html", :required => false, :negatable => false,
+      :desc => "Open system description in HTML format in your web browser."
 
     c.action do |global_options,options,args|
       name = shift_arg(args, "NAME")
@@ -487,10 +489,16 @@ class Cli
       description = store.load(name)
       scope_list = process_scope_option(options[:scope], options["exclude-scope"])
 
+      if options["html"]
+        html_task = GenerateHtmlTask.new
+        html_task.generate(description)
+      end
+
       task = ShowTask.new
       opts = {
           no_pager:   !options["pager"],
-          show_diffs: options["show-diffs"]
+          show_diffs: options["show-diffs"],
+          show_html:  options["html"]
       }
       task.show(description, scope_list, opts)
     end

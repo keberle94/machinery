@@ -41,6 +41,9 @@ in local time are shown in the title of each scope section.
     Include the generated diffs in the output if available (see `machinery help analyze`
     for more information).
 
+  * `--show-html` (optional):
+    Open the system description in HTML format in your web browser using the `xdg-open` command.
+
 
 ### EXAMPLES
 

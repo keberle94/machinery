@@ -20,22 +20,37 @@ class ShowTask
     missing_scopes = []
     output = ""
 
-    scopes.map { |s| Renderer.for(s) }.each do |renderer|
-      section = renderer.render(description, options)
-      unless section.empty?
-        output += section
-      else
-        missing_scopes << renderer.scope
+    if options[:show_html]
+      # HTML output
+      begin
+        Machinery::check_package("xdg-utils")
+        html_path = SystemDescriptionStore.new.html_path(description.name)
+        LoggedCheetah.run("xdg-open", html_path)
+      rescue Cheetah::ExecutionFailed => e
+        raise Machinery::Errors::OpenInBrowserFailed.new(
+          "Could not open system description \"#{description.name}\" in the web browser.\n" \
+          "Error: #{e}\n"
+        )
       end
-    end
-
-    if missing_scopes.length > 0
-      output += "# The following requested scopes were not inspected\n\n"
-      missing_scopes.each do |scope|
-        output += "  * #{Machinery::Ui.internal_scope_list_to_string(scope)}\n"
+    else
+      # Console output
+      scopes.map { |s| Renderer.for(s) }.each do |renderer|
+        section = renderer.render(description, options)
+        unless section.empty?
+          output += section
+        else
+          missing_scopes << renderer.scope
+        end
       end
-    end
 
-    Machinery::Ui.print_output(output, :no_pager => options[:no_pager])
+      if missing_scopes.length > 0
+        output += "# The following requested scopes were not inspected\n\n"
+        missing_scopes.each do |scope|
+          output += "  * #{Machinery::Ui.internal_scope_list_to_string(scope)}\n"
+        end
+      end
+
+      Machinery::Ui.print_output(output, :no_pager => options[:no_pager])
+    end
   end
 end
