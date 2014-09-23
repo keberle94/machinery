@@ -3,6 +3,7 @@
   <head>
     <title><%= description.name %> - Machinery</title>
 
+    <link rel="stylesheet" type="text/css" href="assets/machinery-base.css">
     <link rel="stylesheet" type="text/css" href="assets/machinery.css">
 
     <script src="assets/jquery-2.1.1.min.js"></script>
@@ -23,6 +24,9 @@
 
     <script id="os" class="partial" type="text/html">
       {{#os}}
+        <div class="scope-logo-big">
+          <img src="assets/logo-os.png" />
+        </div>
         <h2>Operating system</h2>
         <div class="row">
           <div class="col-xs-3">
@@ -47,6 +51,9 @@
 
     <script id="packages" class="partial" type="text/html">
       {{#packages.length}}
+        <div class="scope-logo-big">
+          <img src="assets/logo-packages.png" />
+        </div>
       <h2>Packages</h2>
         <div class="row">
           <div class="col-xs-12">
@@ -80,6 +87,9 @@
 
     <script id="patterns" class="partial" type="text/html">
       {{#patterns.length}}
+        <div class="scope-logo-big">
+          <img src="assets/logo-patterns.png" />
+        </div>
       <h2>Patterns</h2>
         <div class="row">
           <div class="col-xs-12">
@@ -107,6 +117,9 @@
 
     <script id="users" type="text/html">
       {{#users.length}}
+        <div class="scope-logo-big">
+          <img src="assets/logo-users.png" />
+        </div>
         <h2>Users</h2>
         <div class="row">
           <div class="col-xs-12">
@@ -141,6 +154,9 @@
 
     <script id="unmanaged-files" class="partial" type="text/html">
       {{#unmanaged_files.files.length}}
+      <div class="scope-logo-big">
+        <img src="assets/logo-unmanaged-files.png" />
+      </div>
       <h2>Unmanaged Files</h2>
         <div class="row">
           <div class="col-xs-12">
@@ -167,6 +183,9 @@
 
     <script id="groups" type="text/html">
       {{#groups.length}}
+        <div class="scope-logo-big">
+          <img src="assets/logo-groups.png" />
+        </div>
         <h2>Groups</h2>
         <div class="row">
           <div class="col-xs-12">
@@ -197,6 +216,9 @@
 
     <script id="repositories" class="partial" type="text/html">
       {{#repositories.length}}
+        <div class="scope-logo-big">
+          <img src="assets/logo-repositories.png" />
+        </div>
         <h2>Repositories</h2>
         <div class="row">
           <div class="col-xs-12">
@@ -235,6 +257,9 @@
 
     <script id="changed-managed-files" class="partial" type="text/html">
       {{#changed_managed_files.files.length}}
+      <div class="scope-logo-big">
+        <img src="assets/logo-changed-managed-files.png" />
+      </div>
       <h2>Changed Managed Files</h2>
         <div class="row">
           <div class="col-xs-12">
@@ -276,6 +301,9 @@
 
     <script id="config-files" class="partial" type="text/html">
       {{#config_files.files.length}}
+      <div class="scope-logo-big">
+        <img src="assets/logo-config-files.png" />
+      </div>
       <h2>Config Files</h2>
         <div class="row">
           <div class="col-xs-12">
@@ -317,6 +345,9 @@
 
     <script id="services" class="partial" type="text/html">
       {{#services.services.length}}
+        <div class="scope-logo-big">
+          <img src="assets/logo-services.png" />
+        </div>
         <h2>Services</h2>
         <div class="row">
           <div class="col-xs-12">
