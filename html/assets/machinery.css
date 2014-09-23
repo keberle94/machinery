@@ -1,5 +1,5 @@
 body {
-  background: #e9e0d6  url('wheels.png') no-repeat  108% -20px;
+  background: #e9e0d6  url('wheels.png') no-repeat  108% -0px;
 }
 
 #nav-bar {
@@ -10,6 +10,8 @@ body {
   width: 100%;
   background: #e9e0d6;
   padding-left: 15px;
+  border-bottom-style: solid;
+  border-bottom-width: 1px;
 }
 
 a.scope_anchor {
@@ -20,4 +22,8 @@ a.scope_anchor {
 .scope-navigation {
   font-size: 60%;
   margin-left: 20px;
+}
+
+.filter-input {
+  margin-bottom: 10px;
 }
