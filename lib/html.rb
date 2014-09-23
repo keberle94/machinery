@@ -17,12 +17,12 @@
 
 class Html
   def self.generate(description)
-    template = ERB.new(
-      File.read(File.join(Machinery::ROOT, "html", "index.html.erb"))
+    template = Haml::Engine.new(
+      File.read(File.join(Machinery::ROOT, "html", "index.html.haml"))
     )
     target = description.store.description_path(description.name)
 
     FileUtils.cp_r(File.join(Machinery::ROOT, "html", "assets"), target)
-    File.write(File.join(target, "index.html"), template.result(binding))
+    File.write(File.join(target, "index.html"), template.render(binding))
   end
 end
