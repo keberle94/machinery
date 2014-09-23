@@ -23,10 +23,13 @@
     %script#scope_os.partial{:type => "text/html"}
       {{#os}}
       %a.scope_anchor{:id => "os"}
-      .scope-logo-big
-        %img{:src => "assets/logo-os.png"}
-      %h2 Operating System
       .row
+        .col-xs-1
+          %img{:src => "assets/logo-os.png"}
+        .col-xs-11
+          %h2 Operating System
+      .row
+        .col-xs-1
         .col-xs-3
           %table.table.table-striped.table-condensed
             %tr
@@ -43,11 +46,14 @@
     %script#scope_packages.partial{:type => "text/html"}
       {{#packages.length}}
       %a.scope_anchor{:id => "packages"}
-      .scope-logo-big
-        %img{:src => "assets/logo-packages.png"}
-      %h2 Packages
       .row
-        .col-xs-12
+        .col-xs-1
+          %img{:src => "assets/logo-packages.png"}
+        .col-xs-11
+          %h2 Packages
+      .row
+        .col-xs-1
+        .col-xs-11
           %table.table.table-striped.table-hover.table-condensed
             %thead
               %tr
@@ -72,11 +78,14 @@
     %script#scope_patterns.partial{:type => "text/html"}
       {{#patterns.length}}
       %a.scope_anchor{:id => "patterns"}
-      .scope-logo-big
-        %img{:src => "assets/logo-patterns.png"}
-      %h2 Patterns
       .row
-        .col-xs-12
+        .col-xs-1
+          %img{:src => "assets/logo-patterns.png"}
+        .col-xs-11
+          %h2 Patterns
+      .row
+        .col-xs-1
+        .col-xs-11
           %table.table.table-striped.table-hover.table-condensed
             %thead
               %tr
@@ -95,11 +104,14 @@
     %script#scope_users{:type => "text/html"}
       {{#users.length}}
       %a.scope_anchor{:id => "users"}
-      .scope-logo-big
-        %img{:src => "assets/logo-users.png"}
-      %h2 Users
       .row
-        .col-xs-12
+        .col-xs-1
+          %img{:src => "assets/logo-users.png"}
+        .col-xs-11
+          %h2 Users
+      .row
+        .col-xs-1
+        .col-xs-11
           %table.table.table-striped.table-hover.table-condensed
             %thead
               %tr
@@ -124,11 +136,14 @@
     %script#scope_unmanaged-files.partial{:type => "text/html"}
       {{#unmanaged_files.files.length}}
       %a.scope_anchor{:id => "unmanaged-files"}
-      .scope-logo-big
-        %img{:src => "assets/logo-unmanaged-files.png"}
-      %h2 Unmanaged Files
       .row
-        .col-xs-12
+        .col-xs-1
+          %img{:src => "assets/logo-unmanaged-files.png"}
+        .col-xs-11
+          %h2 Unmanaged Files
+      .row
+        .col-xs-1
+        .col-xs-11
           %table.table.table-striped.table-hover.table-condensed
             %thead
               %tr
@@ -145,11 +160,14 @@
     %script#scope_groups{:type => "text/html"}
       {{#groups.length}}
       %a.scope_anchor{:id => "groups"}
-      .scope-logo-big
-        %img{:src => "assets/logo-groups.png"}
-      %h2 Groups
       .row
-        .col-xs-12
+        .col-xs-1
+          %img{:src => "assets/logo-groups.png"}
+        .col-xs-11
+          %h2 Groups
+      .row
+        .col-xs-1
+        .col-xs-11
           %table.table.table-striped.table-hover.table-condensed
             %thead
               %tr
@@ -170,11 +188,14 @@
     %script#scope_repositories.partial{:type => "text/html"}
       {{#repositories.length}}
       %a.scope_anchor{:id => "repositories"}
-      .scope-logo-big
-        %img{:src => "assets/logo-repositories.png"}
-      %h2 Repositories
       .row
-        .col-xs-12
+        .col-xs-1
+          %img{:src => "assets/logo-repositories.png"}
+        .col-xs-11
+          %h2 Repositories
+      .row
+        .col-xs-1
+        .col-xs-11
           %table.table.table-striped.table-hover.table-condensed
             %thead
               %tr
@@ -203,11 +224,14 @@
     %script#scope_changed-managed-files.partial{:type => "text/html"}
       {{#changed_managed_files.files.length}}
       %a.scope_anchor{:id => "changed-managed-files"}
-      .scope-logo-big
-        %img{:src => "assets/logo-changed-managed-files.png"}
-      %h2 Changed Managed Files
       .row
-        .col-xs-12
+        .col-xs-1
+          %img{:src => "assets/logo-changed-managed-files.png"}
+        .col-xs-11
+          %h2 Changed Managed Files
+      .row
+        .col-xs-1
+        .col-xs-11
           %table.table.table-striped.table-hover.table-condensed
             %thead
               %tr
@@ -239,11 +263,14 @@
     %script#scope_config-files.partial{:type => "text/html"}
       {{#config_files.files.length}}
       %a.scope_anchor{:id => "config-files"}
-      .scope-logo-big
-        %img{:src => "assets/logo-config-files.png"}
-      %h2 Config Files
       .row
-        .col-xs-12
+        .col-xs-1
+          %img{:src => "assets/logo-config-files.png"}
+        .col-xs-11
+          %h2 Config Files
+      .row
+        .col-xs-1
+        .col-xs-11
           %table.table.table-striped.table-hover.table-condensed
             %thead
               %tr
@@ -275,11 +302,14 @@
     %script#scope_services.partial{:type => "text/html"}
       {{#services.services.length}}
       %a.scope_anchor{:id => "services"}
-      .scope-logo-big
-        %img{:src => "assets/logo-services.png"}
-      %h2 Services
       .row
-        .col-xs-12
+        .col-xs-1
+          %img{:src => "assets/logo-services.png"}
+        .col-xs-11
+          %h2 Services
+      .row
+        .col-xs-1
+        .col-xs-11
           %table.table.table-striped.table-hover.table-condensed
             %tr
               %th Init system
@@ -296,6 +326,7 @@
                 %td {{state}}
               {{/services.services}}
       {{/services.services.length}}
+
     :javascript
       $(document).ready(function () {
         // Render the system description
@@ -366,29 +397,35 @@
   %body
     .container-fluid
       #nav-bar
-        %h1
-          System '#{description.name}'
-        %div
-          Scopes:
-          %a{:href => "#os", :title => "Operating System"}
-            %img{:src => "assets/logo-os-small.png"}/
-          %a{:href => "#packages", :title => "Packages"}
-            %img{:src => "assets/logo-packages-small.png"}/
-          %a{:href => "#patterns", :title => "Patterns"}
-            %img{:src => "assets/logo-patterns-small.png"}/
-          %a{:href => "#users", :title => "Users"}
-            %img{:src => "assets/logo-users-small.png"}/
-          %a{:href => "#groups", :title => "Groups"}
-            %img{:src => "assets/logo-groups-small.png"}/
-          %a{:href => "#repositories", :title => "Repositories"}
-            %img{:src => "assets/logo-repositories-small.png"}/
-          %a{:href => "#unmanaged-files", :title => "Unmanaged Files"}
-            %img{:src => "assets/logo-unmanaged-files-small.png"}/
-          %a{:href => "#changed-managed-files", :title => "Changed Managed Files"}
-            %img{:src => "assets/logo-changed-managed-files-small.png"}/
-          %a{:href => "#config-files", :title => "Config Files"}
-            %img{:src => "assets/logo-config-files-small.png"}/
-          %a{:href => "#services", :title => "Services"}
-            %img{:src => "assets/logo-services-small.png"}/
-        %input#filter{:placeholder => "Type To Filter"}/
+        .row
+          .col-xs-1
+          .col-xs-10
+            %h1
+              System '#{description.name}'
+              %span{:class => "scope-navigation"}
+                Scopes:
+                %a{:href => "#os", :title => "Operating System"}
+                  %img{:src => "assets/logo-os-small.png"}/
+                %a{:href => "#packages", :title => "Packages"}
+                  %img{:src => "assets/logo-packages-small.png"}/
+                %a{:href => "#patterns", :title => "Patterns"}
+                  %img{:src => "assets/logo-patterns-small.png"}/
+                %a{:href => "#users", :title => "Users"}
+                  %img{:src => "assets/logo-users-small.png"}/
+                %a{:href => "#groups", :title => "Groups"}
+                  %img{:src => "assets/logo-groups-small.png"}/
+                %a{:href => "#repositories", :title => "Repositories"}
+                  %img{:src => "assets/logo-repositories-small.png"}/
+                %a{:href => "#unmanaged-files", :title => "Unmanaged Files"}
+                  %img{:src => "assets/logo-unmanaged-files-small.png"}/
+                %a{:href => "#changed-managed-files", :title => "Changed Managed Files"}
+                  %img{:src => "assets/logo-changed-managed-files-small.png"}/
+                %a{:href => "#config-files", :title => "Config Files"}
+                  %img{:src => "assets/logo-config-files-small.png"}/
+                %a{:href => "#services", :title => "Services"}
+                  %img{:src => "assets/logo-services-small.png"}/
+        .row
+          .col-xs-1
+          .col-xs-10
+            %input#filter{:placeholder => "Type To Filter"}/
       #content_container

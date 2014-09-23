@@ -1,13 +1,3 @@
-.scope-logo-big {
-  float: left;
-  margin-right: 10px;
-  margin-bottom: 10px;
-}
-
-.row {
-  clear: left;
-}
-
 body {
   background: #e9e0d6  url('wheels.png') no-repeat  108% -20px;
 }
@@ -19,9 +9,15 @@ body {
   z-index: 1;
   width: 100%;
   background: #e9e0d6;
+  padding-left: 15px;
 }
 
 a.scope_anchor {
   display: block;
   visibility: hidden;
+}
+
+.scope-navigation {
+  font-size: 60%;
+  margin-left: 20px;
 }
