@@ -22,8 +22,9 @@
       {{>services}}
     </script>
 
-    <script id="os" class="partial" type="text/html">
+    <script id="scope_os" class="partial" type="text/html">
       {{#os}}
+        <a id="os"/>
         <div class="scope-logo-big">
           <img src="assets/logo-os.png" />
         </div>
@@ -49,8 +50,9 @@
       {{/os}}
     </script>
 
-    <script id="packages" class="partial" type="text/html">
+    <script id="scope_packages" class="partial" type="text/html">
       {{#packages.length}}
+      <a id="packages"/>
         <div class="scope-logo-big">
           <img src="assets/logo-packages.png" />
         </div>
@@ -85,8 +87,9 @@
       {{/packages.length}}
     </script>
 
-    <script id="patterns" class="partial" type="text/html">
+    <script id="scope_patterns" class="partial" type="text/html">
       {{#patterns.length}}
+        <a id="patterns"/>
         <div class="scope-logo-big">
           <img src="assets/logo-patterns.png" />
         </div>
@@ -115,8 +118,9 @@
       {{/patterns.length}}
     </script>
 
-    <script id="users" type="text/html">
+    <script id="scope_users" type="text/html">
       {{#users.length}}
+        <a id="users"/>
         <div class="scope-logo-big">
           <img src="assets/logo-users.png" />
         </div>
@@ -152,8 +156,9 @@
       {{/users.length}}
     </script>
 
-    <script id="unmanaged-files" class="partial" type="text/html">
+    <script id="scope_unmanaged-files" class="partial" type="text/html">
       {{#unmanaged_files.files.length}}
+      <a id="unmanaged-files"/>
       <div class="scope-logo-big">
         <img src="assets/logo-unmanaged-files.png" />
       </div>
@@ -181,8 +186,9 @@
       {{/unmanaged_files.files.length}}
     </script>
 
-    <script id="groups" type="text/html">
+    <script id="scope_groups" type="text/html">
       {{#groups.length}}
+        <a id="groups"/>
         <div class="scope-logo-big">
           <img src="assets/logo-groups.png" />
         </div>
@@ -214,8 +220,9 @@
       {{/groups.length}}
     </script>
 
-    <script id="repositories" class="partial" type="text/html">
+    <script id="scope_repositories" class="partial" type="text/html">
       {{#repositories.length}}
+        <a id="repositories"/>
         <div class="scope-logo-big">
           <img src="assets/logo-repositories.png" />
         </div>
@@ -255,8 +262,9 @@
       {{/repositories.length}}
     </script>
 
-    <script id="changed-managed-files" class="partial" type="text/html">
+    <script id="scope_changed-managed-files" class="partial" type="text/html">
       {{#changed_managed_files.files.length}}
+      <a id="changed-managed-files"/>
       <div class="scope-logo-big">
         <img src="assets/logo-changed-managed-files.png" />
       </div>
@@ -299,8 +307,9 @@
       {{/changed_managed_files.files.length}}
     </script>
 
-    <script id="config-files" class="partial" type="text/html">
+    <script id="scope_config-files" class="partial" type="text/html">
       {{#config_files.files.length}}
+      <a id="config-files"/>
       <div class="scope-logo-big">
         <img src="assets/logo-config-files.png" />
       </div>
@@ -343,8 +352,9 @@
       {{/config_files.files.length}}
     </script>
 
-    <script id="services" class="partial" type="text/html">
+    <script id="scope_services" class="partial" type="text/html">
       {{#services.services.length}}
+        <a id="services" />
         <div class="scope-logo-big">
           <img src="assets/logo-services.png" />
         </div>
@@ -397,7 +407,7 @@
           "services"
         ]
         $.each(scopes, function(index, scope) {
-          templates[scope] = Hogan.compile($("#" + scope).html())
+          templates[scope] = Hogan.compile($("#scope_" + scope).html())
         })
 
         template = Hogan.compile($('#content').html())
@@ -410,6 +420,18 @@
   <body>
     <div class="container-fluid">
       <h1>System '<%= description.name %>'</h1>
+      <div>
+        Scopes:
+        <a href="#os"><img src="assets/logo-os-small.png"></a>
+        <a href="#packages"><img src="assets/logo-packages-small.png"></a>
+        <a href="#users"><img src="assets/logo-users-small.png"></a>
+        <a href="#groups"><img src="assets/logo-groups-small.png"></a>
+        <a href="#repositories"><img src="assets/logo-repositories-small.png"></a>
+        <a href="#unmanaged-files"><img src="assets/logo-unmanaged-files-small.png"></a>
+        <a href="#changed-managed-files"><img src="assets/logo-changed-managed-files-small.png"></a>
+        <a href="#config-files"><img src="assets/logo-config-files-small.png"></a>
+        <a href="#anchor-services"><img src="assets/logo-services-small.png"></a>
+      </div>
 
       <div id="content_container"></div>
     </div>
