@@ -20,3 +20,8 @@ body {
   width: 100%;
   background: #e9e0d6;
 }
+
+a.scope_anchor {
+  display: block;
+  visibility: hidden;
+}
