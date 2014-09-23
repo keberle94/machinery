@@ -378,11 +378,9 @@
     </script>
 
     <script type="text/javascript">
-      var description = JSON.parse('<%= description.to_hash.to_json %>')
-    </script>
-
-    <script type="text/javascript">
       $(document).ready(function () {
+        // Render the system description
+        var description = JSON.parse('<%= description.to_hash.to_json %>')
         templates = {}
         scopes = [
           "os",
@@ -404,6 +402,40 @@
         $("#content_container").html(
           template.render(description, templates)
         )
+
+        // Implement filter functionality
+        var run_when_done_typing = (function(){
+          var timer = 0;
+          return function(callback, timeout){
+            clearTimeout(timer);
+            timer = setTimeout(callback, timeout);
+           };
+        })()
+
+        $("#filter").keyup(function() {
+          run_when_done_typing(function() {
+            var rows = $("body").find("tr");
+            if($("#filter").val() == "") {
+              rows.show();
+              return;
+            }
+
+            var filters = $("#filter").val().split(" ");
+
+            rows
+              .hide()
+              .filter(function() {
+                var $t = $(this);
+                for(var i = 0; i < filters.length; ++i) {
+                  if($t.is(":contains('" + filters[i] + "')")) {
+                    return true;
+                  }
+                }
+                return false;
+              })
+              .show();
+          }, 500)
+        })
       })
     </script>
   </head>
@@ -411,6 +443,7 @@
     <div class="container-fluid">
       <h1><%= description.name %> - Machinery</h1>
 
+      <input id="filter" placeholder="Type To Filter">
       <div id="content_container"></div>
     </div>
   </body>
