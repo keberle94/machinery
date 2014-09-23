@@ -18,6 +18,7 @@
       {{>unmanaged-files}}
       {{>changed-managed-files}}
       {{>config-files}}
+      {{>services}}
     </script>
 
     <script id="os" class="partial" type="text/html">
@@ -253,6 +254,33 @@
         </tbody>
       </table>
       {{/config_files.files.length}}
+    </script>
+
+    <script id="services" class="partial" type="text/html">
+      {{#services}}
+        <h2>Services</h2>
+        <table>
+          <tr>
+            <th>Init system</th>
+            <td>{{services.init_system}}</td>
+          </tr>
+        </table>
+        <table>
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>State</th>
+            </tr>
+          </thead>
+          <tbody>
+            {{#services.services}}
+              <tr>
+                <td>{{name}}</td>
+                <td>{{state}}</td>
+            {{/services.services}}
+          </tbody>
+        </table>
+      {{/services}}
     </script>
 
     <script type="text/javascript">
