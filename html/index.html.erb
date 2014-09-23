@@ -12,6 +12,7 @@
       <h1><%= description.name %> - Machinery</h1>
       {{>os}}
       {{>packages}}
+      {{>patterns}}
       {{>users}}
       {{>groups}}
       {{>repositories}}
@@ -68,6 +69,29 @@
         </tbody>
       </table>
       {{/packages.length}}
+    </script>
+
+    <script id="patterns" class="partial" type="text/html">
+      {{#patterns.length}}
+      <h2>Patterns</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Version</th>
+            <th>Release</th>
+          </tr>
+        </thead>
+        <tbody>
+          {{#patterns}}
+            <tr>
+              <td>{{name}}</td>
+              <td>{{version}}</td>
+              <td>{{release}}</td>
+          {{/patterns}}
+        </tbody>
+      </table>
+      {{/patterns.length}}
     </script>
 
     <script id="users" type="text/html">
@@ -298,6 +322,7 @@
           "groups",
           "users",
           "packages",
+          "patterns",
           "repositories",
           "services"
         ]
