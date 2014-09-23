@@ -7,3 +7,16 @@
 .row {
   clear: left;
 }
+
+body {
+  background: #e9e0d6  url('wheels.png') no-repeat  108% -20px;
+}
+
+#nav-bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 1;
+  width: 100%;
+  background: #e9e0d6;
+}

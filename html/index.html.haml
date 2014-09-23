@@ -355,30 +355,35 @@
               .show();
           }, 500)
         })
+
+        // Align content below floating menu
+        $("#content_container").css("margin-top", $("#nav-bar").height() + 20)
       })
+
   %body
     .container-fluid
-      %h1
-        System '#{description.name}'
-      %div
-        Scopes:
-        %a{:href => "#os"}
-          %img{:src => "assets/logo-os-small.png"}/
-        %a{:href => "#packages"}
-          %img{:src => "assets/logo-packages-small.png"}/
-        %a{:href => "#users"}
-          %img{:src => "assets/logo-users-small.png"}/
-        %a{:href => "#groups"}
-          %img{:src => "assets/logo-groups-small.png"}/
-        %a{:href => "#repositories"}
-          %img{:src => "assets/logo-repositories-small.png"}/
-        %a{:href => "#unmanaged-files"}
-          %img{:src => "assets/logo-unmanaged-files-small.png"}/
-        %a{:href => "#changed-managed-files"}
-          %img{:src => "assets/logo-changed-managed-files-small.png"}/
-        %a{:href => "#config-files"}
-          %img{:src => "assets/logo-config-files-small.png"}/
-        %a{:href => "#anchor-services"}
-          %img{:src => "assets/logo-services-small.png"}/
-      %input#filter{:placeholder => "Type To Filter"}/
+      #nav-bar
+        %h1
+          System '#{description.name}'
+        %div
+          Scopes:
+          %a{:href => "#os"}
+            %img{:src => "assets/logo-os-small.png"}/
+          %a{:href => "#packages"}
+            %img{:src => "assets/logo-packages-small.png"}/
+          %a{:href => "#users"}
+            %img{:src => "assets/logo-users-small.png"}/
+          %a{:href => "#groups"}
+            %img{:src => "assets/logo-groups-small.png"}/
+          %a{:href => "#repositories"}
+            %img{:src => "assets/logo-repositories-small.png"}/
+          %a{:href => "#unmanaged-files"}
+            %img{:src => "assets/logo-unmanaged-files-small.png"}/
+          %a{:href => "#changed-managed-files"}
+            %img{:src => "assets/logo-changed-managed-files-small.png"}/
+          %a{:href => "#config-files"}
+            %img{:src => "assets/logo-config-files-small.png"}/
+          %a{:href => "#anchor-services"}
+            %img{:src => "assets/logo-services-small.png"}/
+        %input#filter{:placeholder => "Type To Filter"}/
       #content_container
