@@ -24,6 +24,7 @@ class ShowTask
       # HTML output
       begin
         Machinery::check_package("xdg-utils")
+        Html.generate(description)
         html_path = SystemDescriptionStore.new.html_path(description.name)
         LoggedCheetah.run("xdg-open", html_path)
       rescue Cheetah::ExecutionFailed => e

@@ -489,10 +489,6 @@ class Cli
       description = store.load(name)
       scope_list = process_scope_option(options[:scope], options["exclude-scope"])
 
-      if options["html"]
-        html_task = GenerateHtmlTask.new
-        html_task.generate(description)
-      end
 
       task = ShowTask.new
       opts = {
