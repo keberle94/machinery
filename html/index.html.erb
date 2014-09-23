@@ -6,7 +6,7 @@
     <link rel="stylesheet" type="text/css" href="assets/machinery.css">
 
     <script src="assets/jquery-2.1.1.min.js"></script>
-    <script src="assets/ICanHaz.min.js" ></script>
+    <script src="assets/hogan-3.0.2.min.mustache.js" ></script>
 
     <script id="body" type="text/html">
       <h1><%= description.name %> - Machinery</h1>
@@ -257,7 +257,7 @@
     </script>
 
     <script id="services" class="partial" type="text/html">
-      {{#services}}
+      {{#services.services.length}}
         <h2>Services</h2>
         <table>
           <tr>
@@ -280,7 +280,7 @@
             {{/services.services}}
           </tbody>
         </table>
-      {{/services}}
+      {{/services.services.length}}
     </script>
 
     <script type="text/javascript">
@@ -289,7 +289,26 @@
 
     <script type="text/javascript">
       $(document).ready(function () {
-        $("body").html(ich.body(description))
+        templates = {}
+        scopes = [
+          "os",
+          "changed-managed-files",
+          "config-files",
+          "unmanaged-files",
+          "groups",
+          "users",
+          "packages",
+          "repositories",
+          "services"
+        ]
+        $.each(scopes, function(index, scope) {
+          templates[scope] = Hogan.compile($("#" + scope).html())
+        })
+
+        template = Hogan.compile($('#body').html())
+        $("body").html(
+          template.render(description, templates)
+        )
       })
     </script>
   </head>
