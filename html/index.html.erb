@@ -17,6 +17,7 @@
       {{>repositories}}
       {{>unmanaged-files}}
       {{>changed-managed-files}}
+      {{>config-files}}
     </script>
 
     <script id="os" class="partial" type="text/html">
@@ -215,6 +216,43 @@
         </tbody>
       </table>
       {{/changed_managed_files.files.length}}
+    </script>
+
+    <script id="config-files" class="partial" type="text/html">
+      {{#config_files.files.length}}
+      <h2>Config Files</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Package Name</th>
+            <th>Package Version</th>
+            <th>Changes</th>
+            <th>Mode</th>
+            <th>User</th>
+            <th>Group</th>
+          </tr>
+        </thead>
+        <tbody>
+          {{#config_files.files}}
+            <tr>
+              <td>{{name}}</td>
+              <td>{{package_name}}</td>
+              <td>{{package_version}}</td>
+              {{#changes.length}}
+                <td>{{changes}}</td>
+              {{/changes.length}}
+              {{#error_message}}
+                <td title="{{error_message}}">Error</td>
+              {{/error_message}}
+              <td>{{mode}}</td>
+              <td>{{user}}</td>
+              <td>{{group}}</td>
+            </tr>
+          {{/config_files.files}}
+        </tbody>
+      </table>
+      {{/config_files.files.length}}
     </script>
 
     <script type="text/javascript">
