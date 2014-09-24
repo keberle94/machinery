@@ -56,7 +56,8 @@ namespace :man_pages do
   desc 'Build man page(s)'
   task :build do
     puts "  Building man pages"
-    system "cat man/machinery_main.1.md  man/machinery-*.1.md man/machinery_footer.1.md  > man/machinery.1.md"
+    system "for scope in plugins/docs/*.md ; do echo -n '\n* '; basename $scope .md | sed -e 's/_/-/g'; echo "" ; cat $scope ; done > man/machinery_main_scopes.1.md"
+    system "cat man/machinery_main_general.1.md man/machinery_main_scopes.1.md man/machinery_main_usecases.1.md   man/machinery-*.1.md man/machinery_footer.1.md  > man/machinery.1.md"
     system "sed -i '/<!--.*-->/d' man/machinery.1.md"
     system "ronn man/machinery.1.md"
     system "gzip -f man/*.1"

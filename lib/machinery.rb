@@ -29,6 +29,7 @@ require "uri"
 require "gli"
 require "json-schema"
 require "haml"
+require "kramdown"
 
 require_relative 'machinery_logger'
 require_relative 'zypper'

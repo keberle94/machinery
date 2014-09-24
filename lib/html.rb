@@ -31,4 +31,10 @@ class Html
       EOT
     )
   end
+
+  def self.scope_help(scope)
+    text = File.read(File.join(Machinery::ROOT, "plugins", "docs", "#{scope}.md"))
+    Kramdown::Document.new(text).to_html
+  end
+
 end

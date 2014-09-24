@@ -110,4 +110,6 @@ $(document).ready(function () {
     $(this).hide()
     $("#collapse-all").show()
   })
+
+  $("img").popover();
 })
