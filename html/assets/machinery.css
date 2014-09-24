@@ -27,3 +27,7 @@ a.scope_anchor {
 .filter-input {
   margin-bottom: 10px;
 }
+
+.fixed {
+  position: fixed;
+}

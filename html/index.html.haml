@@ -23,308 +23,318 @@
     %script#scope_os.partial{:type => "text/html"}
       {{#os}}
       %a.scope_anchor{:id => "os"}
-      .row
-        .col-xs-1
-          %img{:src => "assets/logo-os.png"}
-        .col-xs-11
-          %h2 Operating System
-      .row
-        .col-xs-1
-        .col-xs-3
-          %table.table.table-striped.table-condensed
-            %tr
-              %th Name
-              %td {{os.name}}
-            %tr
-              %th Version
-              %td {{os.version}}
-            %tr
-              %th Architecture
-              %td {{os.architecture}}
+      #os_container.scope
+        .row
+          .col-xs-1
+            %img.scope_logo_big{:src => "assets/logo-os.png"}
+          .col-xs-11
+            %h2 Operating System
+        .row
+          .col-xs-1
+          .col-xs-3
+            %table.table.table-striped.table-condensed
+              %tr
+                %th Name
+                %td {{os.name}}
+              %tr
+                %th Version
+                %td {{os.version}}
+              %tr
+                %th Architecture
+                %td {{os.architecture}}
       {{/os}}
 
     %script#scope_packages.partial{:type => "text/html"}
       {{#packages.length}}
       %a.scope_anchor{:id => "packages"}
-      .row
-        .col-xs-1
-          %img{:src => "assets/logo-packages.png"}
-        .col-xs-11
-          %h2 Packages
-      .row
-        .col-xs-1
-        .col-xs-11
-          %table.table.table-striped.table-hover.table-condensed
-            %thead
-              %tr
-                %th Name
-                %th Version
-                %th Release
-                %th Arch
-                %th Vendor
-                %th Checksum
-            %tbody
-              {{#packages}}
-              %tr
-                %td {{name}}
-                %td {{version}}
-                %td {{release}}
-                %td {{arch}}
-                %td {{vendor}}
-                %td {{checksum}}
-              {{/packages}}
+      #packages_container.scope
+        .row
+          .col-xs-1
+            %img.scope_logo_big{:src => "assets/logo-packages.png"}
+          .col-xs-11
+            %h2 Packages
+        .row
+          .col-xs-1
+          .col-xs-11
+            %table.table.table-striped.table-hover.table-condensed
+              %thead
+                %tr
+                  %th Name
+                  %th Version
+                  %th Release
+                  %th Arch
+                  %th Vendor
+                  %th Checksum
+              %tbody
+                {{#packages}}
+                %tr
+                  %td {{name}}
+                  %td {{version}}
+                  %td {{release}}
+                  %td {{arch}}
+                  %td {{vendor}}
+                  %td {{checksum}}
+                {{/packages}}
       {{/packages.length}}
 
     %script#scope_patterns.partial{:type => "text/html"}
       {{#patterns.length}}
       %a.scope_anchor{:id => "patterns"}
-      .row
-        .col-xs-1
-          %img{:src => "assets/logo-patterns.png"}
-        .col-xs-11
-          %h2 Patterns
-      .row
-        .col-xs-1
-        .col-xs-11
-          %table.table.table-striped.table-hover.table-condensed
-            %thead
-              %tr
-                %th Name
-                %th Version
-                %th Release
-            %tbody
-              {{#patterns}}
-              %tr
-                %td {{name}}
-                %td {{version}}
-                %td {{release}}
-              {{/patterns}}
+      #patterns_container.scope
+        .row
+          .col-xs-1
+            %img.scope_logo_big{:src => "assets/logo-patterns.png"}
+          .col-xs-11
+            %h2 Patterns
+        .row
+          .col-xs-1
+          .col-xs-11
+            %table.table.table-striped.table-hover.table-condensed
+              %thead
+                %tr
+                  %th Name
+                  %th Version
+                  %th Release
+              %tbody
+                {{#patterns}}
+                %tr
+                  %td {{name}}
+                  %td {{version}}
+                  %td {{release}}
+                {{/patterns}}
       {{/patterns.length}}
 
     %script#scope_users{:type => "text/html"}
       {{#users.length}}
       %a.scope_anchor{:id => "users"}
-      .row
-        .col-xs-1
-          %img{:src => "assets/logo-users.png"}
-        .col-xs-11
-          %h2 Users
-      .row
-        .col-xs-1
-        .col-xs-11
-          %table.table.table-striped.table-hover.table-condensed
-            %thead
-              %tr
-                %th Name
-                %th UID
-                %th GID
-                %th Comment
-                %th Home
-                %th Shell
-            %tbody
-              {{#users}}
-              %tr
-                %td {{name}}
-                %td {{uid}}
-                %td {{gid}}
-                %td {{comment}}
-                %td {{home}}
-                %td {{shell}}
-              {{/users}}
+      #users_container.scope
+        .row
+          .col-xs-1
+            %img.scope_logo_big{:src => "assets/logo-users.png"}
+          .col-xs-11
+            %h2 Users
+        .row
+          .col-xs-1
+          .col-xs-11
+            %table.table.table-striped.table-hover.table-condensed
+              %thead
+                %tr
+                  %th Name
+                  %th UID
+                  %th GID
+                  %th Comment
+                  %th Home
+                  %th Shell
+              %tbody
+                {{#users}}
+                %tr
+                  %td {{name}}
+                  %td {{uid}}
+                  %td {{gid}}
+                  %td {{comment}}
+                  %td {{home}}
+                  %td {{shell}}
+                {{/users}}
       {{/users.length}}
 
     %script#scope_unmanaged-files.partial{:type => "text/html"}
       {{#unmanaged_files.files.length}}
       %a.scope_anchor{:id => "unmanaged-files"}
-      .row
-        .col-xs-1
-          %img{:src => "assets/logo-unmanaged-files.png"}
-        .col-xs-11
-          %h2 Unmanaged Files
-      .row
-        .col-xs-1
-        .col-xs-11
-          %table.table.table-striped.table-hover.table-condensed
-            %thead
-              %tr
-                %th Name
-                %th Type
-            %tbody
-              {{#unmanaged_files.files}}
-              %tr
-                %td {{name}}
-                %td {{type}}
-              {{/unmanaged_files.files}}
+      #unmanaged-files_container.scope
+        .row
+          .col-xs-1
+            %img.scope_logo_big{:src => "assets/logo-unmanaged-files.png"}
+          .col-xs-11
+            %h2 Unmanaged Files
+        .row
+          .col-xs-1
+          .col-xs-11
+            %table.table.table-striped.table-hover.table-condensed
+              %thead
+                %tr
+                  %th Name
+                  %th Type
+              %tbody
+                {{#unmanaged_files.files}}
+                %tr
+                  %td {{name}}
+                  %td {{type}}
+                {{/unmanaged_files.files}}
       {{/unmanaged_files.files.length}}
 
     %script#scope_groups{:type => "text/html"}
       {{#groups.length}}
       %a.scope_anchor{:id => "groups"}
-      .row
-        .col-xs-1
-          %img{:src => "assets/logo-groups.png"}
-        .col-xs-11
-          %h2 Groups
-      .row
-        .col-xs-1
-        .col-xs-11
-          %table.table.table-striped.table-hover.table-condensed
-            %thead
-              %tr
-                %th Name
-                %th GID
-                %th Password
-                %th Users
-            %tbody
-              {{#groups}}
-              %tr
-                %td {{name}}
-                %td {{gid}}
-                %td {{password}}
-                %td {{users}}
-              {{/groups}}
+      #groups_container.scope
+        .row
+          .col-xs-1
+            %img.scope_logo_big{:src => "assets/logo-groups.png"}
+          .col-xs-11
+            %h2 Groups
+        .row
+          .col-xs-1
+          .col-xs-11
+            %table.table.table-striped.table-hover.table-condensed
+              %thead
+                %tr
+                  %th Name
+                  %th GID
+                  %th Password
+                  %th Users
+              %tbody
+                {{#groups}}
+                %tr
+                  %td {{name}}
+                  %td {{gid}}
+                  %td {{password}}
+                  %td {{users}}
+                {{/groups}}
       {{/groups.length}}
 
     %script#scope_repositories.partial{:type => "text/html"}
       {{#repositories.length}}
       %a.scope_anchor{:id => "repositories"}
-      .row
-        .col-xs-1
-          %img{:src => "assets/logo-repositories.png"}
-        .col-xs-11
-          %h2 Repositories
-      .row
-        .col-xs-1
-        .col-xs-11
-          %table.table.table-striped.table-hover.table-condensed
-            %thead
-              %tr
-                %th Name
-                %th Alias
-                %th Type
-                %th URL
-                %th Enabled
-                %th Autorefresh
-                %th GPG Check
-                %th Priority
-            %tbody
-              {{#repositories}}
-              %tr
-                %td {{name}}
-                %td {{alias}}
-                %td {{type}}
-                %td {{url}}
-                %td {{enabled}}
-                %td {{autorefresh}}
-                %td {{gpgcheck}}
-                %td {{priority}}
-              {{/repositories}}
+      #repositories_container.scope
+        .row
+          .col-xs-1
+            %img.scope_logo_big{:src => "assets/logo-repositories.png"}
+          .col-xs-11
+            %h2 Repositories
+        .row
+          .col-xs-1
+          .col-xs-11
+            %table.table.table-striped.table-hover.table-condensed
+              %thead
+                %tr
+                  %th Name
+                  %th Alias
+                  %th Type
+                  %th URL
+                  %th Enabled
+                  %th Autorefresh
+                  %th GPG Check
+                  %th Priority
+              %tbody
+                {{#repositories}}
+                %tr
+                  %td {{name}}
+                  %td {{alias}}
+                  %td {{type}}
+                  %td {{url}}
+                  %td {{enabled}}
+                  %td {{autorefresh}}
+                  %td {{gpgcheck}}
+                  %td {{priority}}
+                {{/repositories}}
       {{/repositories.length}}
 
     %script#scope_changed-managed-files.partial{:type => "text/html"}
       {{#changed_managed_files.files.length}}
       %a.scope_anchor{:id => "changed-managed-files"}
-      .row
-        .col-xs-1
-          %img{:src => "assets/logo-changed-managed-files.png"}
-        .col-xs-11
-          %h2 Changed Managed Files
-      .row
-        .col-xs-1
-        .col-xs-11
-          %table.table.table-striped.table-hover.table-condensed
-            %thead
-              %tr
-                %th Name
-                %th Package Name
-                %th Package Version
-                %th Changes
-                %th Mode
-                %th User
-                %th Group
-            %tbody
-              {{#changed_managed_files.files}}
-              %tr
-                %td {{name}}
-                %td {{package_name}}
-                %td {{package_version}}
-                {{#changes.length}}
-                %td {{changes}}
-                {{/changes.length}}
-                {{#error_message}}
-                %td{:title => "{{error_message}}"} Error
-                {{/error_message}}
-                %td {{mode}}
-                %td {{user}}
-                %td {{group}}
-              {{/changed_managed_files.files}}
-      {{/changed_managed_files.files.length}}
+      #changed-managed-files_container.scope
+        .row
+          .col-xs-1
+            %img.scope_logo_big{:src => "assets/logo-changed-managed-files.png"}
+          .col-xs-11
+            %h2 Changed Managed Files
+        .row
+          .col-xs-1
+          .col-xs-11
+            %table.table.table-striped.table-hover.table-condensed
+              %thead
+                %tr
+                  %th Name
+                  %th Package Name
+                  %th Package Version
+                  %th Changes
+                  %th Mode
+                  %th User
+                  %th Group
+              %tbody
+                {{#changed_managed_files.files}}
+                %tr
+                  %td {{name}}
+                  %td {{package_name}}
+                  %td {{package_version}}
+                  {{#changes.length}}
+                  %td {{changes}}
+                  {{/changes.length}}
+                  {{#error_message}}
+                  %td{:title => "{{error_message}}"} Error
+                  {{/error_message}}
+                  %td {{mode}}
+                  %td {{user}}
+                  %td {{group}}
+                {{/changed_managed_files.files}}
+        {{/changed_managed_files.files.length}}
 
     %script#scope_config-files.partial{:type => "text/html"}
       {{#config_files.files.length}}
       %a.scope_anchor{:id => "config-files"}
-      .row
-        .col-xs-1
-          %img{:src => "assets/logo-config-files.png"}
-        .col-xs-11
-          %h2 Config Files
-      .row
-        .col-xs-1
-        .col-xs-11
-          %table.table.table-striped.table-hover.table-condensed
-            %thead
-              %tr
-                %th Name
-                %th Package Name
-                %th Package Version
-                %th Changes
-                %th Mode
-                %th User
-                %th Group
-            %tbody
-              {{#config_files.files}}
-              %tr
-                %td {{name}}
-                %td {{package_name}}
-                %td {{package_version}}
-                {{#changes.length}}
-                %td {{changes}}
-                {{/changes.length}}
-                {{#error_message}}
-                %td{:title => "{{error_message}}"} Error
-                {{/error_message}}
-                %td {{mode}}
-                %td {{user}}
-                %td {{group}}
-              {{/config_files.files}}
-      {{/config_files.files.length}}
+      #config-files_container.scope
+        .row
+          .col-xs-1
+            %img.scope_logo_big{:src => "assets/logo-config-files.png"}
+          .col-xs-11
+            %h2 Config Files
+        .row
+          .col-xs-1
+          .col-xs-11
+            %table.table.table-striped.table-hover.table-condensed
+              %thead
+                %tr
+                  %th Name
+                  %th Package Name
+                  %th Package Version
+                  %th Changes
+                  %th Mode
+                  %th User
+                  %th Group
+              %tbody
+                {{#config_files.files}}
+                %tr
+                  %td {{name}}
+                  %td {{package_name}}
+                  %td {{package_version}}
+                  {{#changes.length}}
+                  %td {{changes}}
+                  {{/changes.length}}
+                  {{#error_message}}
+                  %td{:title => "{{error_message}}"} Error
+                  {{/error_message}}
+                  %td {{mode}}
+                  %td {{user}}
+                  %td {{group}}
+                {{/config_files.files}}
+        {{/config_files.files.length}}
 
     %script#scope_services.partial{:type => "text/html"}
       {{#services.services.length}}
       %a.scope_anchor{:id => "services"}
-      .row
-        .col-xs-1
-          %img{:src => "assets/logo-services.png"}
-        .col-xs-11
-          %h2 Services
-      .row
-        .col-xs-1
-        .col-xs-11
-          %table.table.table-striped.table-hover.table-condensed
-            %tr
-              %th Init system
-              %td {{services.init_system}}
-          %table.table.table-striped.table-hover.table-condensed
-            %thead
+      #services_container.scope
+        .row
+          .col-xs-1
+            %img.scope_logo_big{:src => "assets/logo-services.png"}
+          .col-xs-11
+            %h2 Services
+        .row
+          .col-xs-1
+          .col-xs-11
+            %table.table.table-striped.table-hover.table-condensed
               %tr
-                %th Name
-                %th State
-            %tbody
-              {{#services.services}}
-              %tr
-                %td {{name}}
-                %td {{state}}
-              {{/services.services}}
+                %th Init system
+                %td {{services.init_system}}
+            %table.table.table-striped.table-hover.table-condensed
+              %thead
+                %tr
+                  %th Name
+                  %th State
+              %tbody
+                {{#services.services}}
+                %tr
+                  %td {{name}}
+                  %td {{state}}
+                {{/services.services}}
       {{/services.services.length}}
 
     %script{:src => "assets/description.js"}

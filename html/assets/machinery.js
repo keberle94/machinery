@@ -62,4 +62,20 @@ $(document).ready(function () {
   $("#content_container").css("margin-top", header_height)
   $("a.scope_anchor").css("height", header_height)
   $("a.scope_anchor").css("margin-top", -header_height)
+
+  $('.scope_logo_big').each(function(){
+    var icon = $(this)
+    var pos = icon.offset()
+    var container = icon.closest(".scope")
+    var bottom_boundary = container.offset().top + container.height() - 20
+    $(window).scroll(function() {
+      var top_pos = $(this).scrollTop() + header_height;
+      var bottom_pos = top_pos + icon.height();
+      if(top_pos >= pos.top && icon.css('position') == 'static') {
+        icon.addClass('fixed').css("top", header_height);
+      } else if(top_pos <= pos.top && icon.hasClass('fixed')) {
+        icon.removeClass('fixed');
+      }
+    })
+  })
 })
