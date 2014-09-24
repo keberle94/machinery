@@ -24,6 +24,14 @@ a.scope_anchor {
   margin-left: 20px;
 }
 
+.scope-summary {
+  display: inline;
+  font-weight: normal;
+  line-height: 1;
+  color: #999999;
+  font-size: 65%;
+}
+
 .filter-input {
   margin-bottom: 10px;
 }

@@ -1,12 +1,13 @@
 $(document).ready(function () {
   // Render the system description
   var description = getDescription()
+
   templates = {}
   scopes = [
     "os",
-    "changed-managed-files",
-    "config-files",
-    "unmanaged-files",
+    "changed_managed_files",
+    "config_files",
+    "unmanaged_files",
     "groups",
     "users",
     "packages",
@@ -14,10 +15,21 @@ $(document).ready(function () {
     "repositories",
     "services"
   ]
+
+
+  // Enrich description with meta information summaries
+  description.meta_info = {}
+  $.each(scopes, function(index, scope) {
+    if(description.meta[scope]) {
+      description.meta_info[scope] = " (" +
+        "inspected host: '" + description.meta[scope].hostname + "', " +
+        "at: " + new Date(description.meta[scope].modified).toLocaleString() + ")"
+    }
+  })
+
   $.each(scopes, function(index, scope) {
     templates[scope] = Hogan.compile($("#scope_" + scope).html())
   })
-
   template = Hogan.compile($('#content').html())
   $("#content_container").html(
     template.render(description, templates)
@@ -78,4 +90,7 @@ $(document).ready(function () {
       }
     })
   })
+
+  // Set meta information in scope headers
+  $('')
 })
