@@ -91,6 +91,9 @@ $(document).ready(function () {
     })
   })
 
-  // Set meta information in scope headers
-  $('')
+  // Hook up the toggle links
+  $('.toggle').click(function(){
+    $(this).closest('.scope').find('.scope_content').collapse('toggle')
+    $(this).toggleClass("collapsed")
+  })
 })

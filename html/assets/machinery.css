@@ -39,3 +39,12 @@ a.scope_anchor {
 .fixed {
   position: fixed;
 }
+
+img.toggle {
+  float: right;
+  content:url("arrow_down.png");
+}
+
+img.collapsed {
+  content:url("arrow_up.png");
+}
