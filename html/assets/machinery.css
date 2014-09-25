@@ -1,14 +1,14 @@
 body {
-  background: #e9e0d6  url('wheels.png') no-repeat  108% -0px;
+  background: #e9e0d6;
 }
 
 #nav-bar {
+  background: #e9e0d6 url('wheels_horizontal.png') no-repeat 112% -105px;
   position: fixed;
   top: 0;
   left: 0;
   z-index: 1;
   width: 100%;
-  background: #e9e0d6;
   padding-left: 15px;
   border-bottom-style: solid;
   border-bottom-width: 1px;
@@ -19,11 +19,6 @@ a.scope_anchor {
   visibility: hidden;
 }
 
-.scope-navigation {
-  font-size: 60%;
-  margin-left: 20px;
-}
-
 .scope-summary {
   display: inline;
   font-weight: normal;
@@ -32,8 +27,18 @@ a.scope_anchor {
   font-size: 65%;
 }
 
+.scope-navigation {
+  font-size: 60%;
+  margin-left: 30px;
+}
+
+
 .filter-input {
   margin-bottom: 10px;
+}
+
+.filter-input input {
+  width: 250px;
 }
 
 .fixed {
@@ -54,4 +59,20 @@ span.toggle.collapsed {
 
 .popover{
   max-width: 800px;
+}
+
+h1 {
+  color: #3D3A38;
+}
+
+h2 {
+  color: #67635E;
+}
+
+a, a:hover {
+  color: #7A7570;
+}
+
+.pad-top {
+  margin-top: 10px;
 }
