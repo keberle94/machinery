@@ -44,9 +44,9 @@ span.toggle {
   float: right;
   width: 24px;
   height: 24px;
-  background: url("arrow_down.png");
+  background: url("arrow_up.png");
 }
 
 span.toggle.collapsed {
-  background :url("arrow_up.png");
+  background :url("arrow_down.png");
 }
