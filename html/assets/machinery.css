@@ -40,11 +40,13 @@ a.scope_anchor {
   position: fixed;
 }
 
-img.toggle {
+span.toggle {
   float: right;
-  content:url("arrow_down.png");
+  width: 24px;
+  height: 24px;
+  background: url("arrow_down.png");
 }
 
-img.collapsed {
-  content:url("arrow_up.png");
+span.toggle.collapsed {
+  background :url("arrow_up.png");
 }
