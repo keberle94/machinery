@@ -96,4 +96,18 @@ $(document).ready(function () {
     $(this).closest('.scope').find('.scope_content').collapse('toggle')
     $(this).toggleClass("collapsed")
   })
+
+  $("#collapse-all").click(function(){
+    $(".scope_content").removeClass("in")
+    $(".toggle").addClass("collapsed")
+    $(this).hide()
+    $("#expand-all").show()
+  })
+
+  $("#expand-all").click(function(){
+    $(".scope_content").addClass("in")
+    $(".toggle").removeClass("collapsed")
+    $(this).hide()
+    $("#collapse-all").show()
+  })
 })
