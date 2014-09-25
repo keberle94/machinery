@@ -50,3 +50,7 @@ span.toggle {
 span.toggle.collapsed {
   background :url("arrow_down.png");
 }
+
+.popover{
+  max-width: 800px;
+}
