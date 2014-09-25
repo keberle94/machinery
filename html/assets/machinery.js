@@ -98,14 +98,14 @@ $(document).ready(function () {
   })
 
   $("#collapse-all").click(function(){
-    $(".scope_content").removeClass("in")
+    $(".scope_content").collapse('hide')
     $(".toggle").addClass("collapsed")
     $(this).hide()
     $("#expand-all").show()
   })
 
   $("#expand-all").click(function(){
-    $(".scope_content").addClass("in")
+    $(".scope_content").collapse('show')
     $(".toggle").removeClass("collapsed")
     $(this).hide()
     $("#collapse-all").show()
