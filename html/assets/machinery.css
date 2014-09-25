@@ -45,6 +45,7 @@ span.toggle {
   width: 24px;
   height: 24px;
   background: url("arrow_up.png");
+  cursor: pointer;
 }
 
 span.toggle.collapsed {
