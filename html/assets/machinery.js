@@ -46,6 +46,7 @@ $(document).ready(function () {
 
   $("#filter").keyup(function() {
     run_when_done_typing(function() {
+      window.scrollTo(0, 0)
       var rows = $("body").find("tr");
       if($("#filter").val() == "") {
         rows.show();
@@ -77,12 +78,11 @@ $(document).ready(function () {
 
   $('.scope_logo_big').each(function(){
     var icon = $(this)
-    var pos = icon.offset()
-    var container = icon.closest(".scope")
-    var bottom_boundary = container.offset().top + container.height() - 20
     $(window).scroll(function() {
+      icon.removeClass('fixed');
+      var pos = icon.offset()
       var top_pos = $(this).scrollTop() + header_height;
-      var bottom_pos = top_pos + icon.height();
+      console.log(pos, top_pos)
       if(top_pos >= pos.top && icon.css('position') == 'static') {
         icon.addClass('fixed').css("top", header_height);
       } else if(top_pos <= pos.top && icon.hasClass('fixed')) {
