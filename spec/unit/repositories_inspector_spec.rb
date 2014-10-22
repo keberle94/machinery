@@ -51,6 +51,49 @@ Weird zypper warning message which shouldn't mess up the repository parsing.
 15 | nu_novell_com:SLES11-SP3-Pool                    | SLES11-SP3-Pool                                  | Yes     | Yes     |   99     | rpm-md | https://nu.novell.com/repo/$RCE/SLES11-SP3-Pool/sle-11-i586?credentials=NCCcredentials             | nu_novell_com
       EOF
     }
+    let(:yum_output) {
+<<-EOF
+Not loading "blacklist" plugin, as it is disabled
+Loading "langpacks" plugin
+Loading "refresh-packagekit" plugin
+Not loading "whiteout" plugin, as it is disabled
+Adding en_US to language list
+Config time: 0.014
+Yum version: 3.4.3
+Setting up Package Sacks
+pkgsack time: 0.013
+Repo-id      : fedora/20/x86_64
+Repo-name    : Fedora 20 - x86_64
+Repo-status  : enabled
+Repo-revision: 1386924430
+Repo-tags    : binary-x86_64
+Repo-distro-tags: [cpe:/o:fedoraproject:fedora:20]: Null
+Repo-updated : Fri Dec 13 09:55:41 2013
+Repo-pkgs    : 38,597
+Repo-size    : 38 G
+Repo-metalink: https://mirrors.fedoraproject.org/metalink?repo=fedora-20&arch=x86_64
+  Updated    : Fri Dec 13 09:55:41 2013
+Repo-baseurl : http://mirror2.hs-esslingen.de/fedora/linux/releases/20/Everything/x86_64/os/ (94 more)
+Repo-expire  : 604,800 second(s) (last: Mon Oct 20 16:46:16 2014)
+Repo-filename: ///etc/yum.repos.d/fedora.repo
+
+Repo-id      : fedora-debuginfo/20/x86_64
+Repo-name    : Fedora 20 - x86_64 - Debug
+Repo-status  : disabled
+Repo-metalink: https://mirrors.fedoraproject.org/metalink?repo=fedora-debug-20&arch=x86_64
+Repo-expire  : 21,600 second(s) (last: Unknown)
+Repo-filename: ///etc/yum.repos.d/fedora.repo
+
+Repo-id      : fedora-source/20/x86_64
+Repo-name    : Fedora 20 - Source
+Repo-status  : disabled
+Repo-metalink: https://mirrors.fedoraproject.org/metalink?repo=fedora-source-20&arch=x86_64
+Repo-expire  : 21,600 second(s) (last: Unknown)
+Repo-filename: ///etc/yum.repos.d/fedora.repo
+
+repolist: 58,567
+      EOF
+    }
     let(:expected_repo_list) {
       RepositoriesScope.new([
         Repository.new(
@@ -87,6 +130,41 @@ Weird zypper warning message which shouldn't mess up the repository parsing.
         )
       ])
     }
+    let(:expected_yum_repo_list) {
+     RepositoriesScope.new([
+        Repository.new(
+          alias: "fedora/20/x86_64",
+          name: "Fedora 20 - x86_64",
+          type: nil,
+          url: "https://mirrors.fedoraproject.org/metalink?repo=fedora-20&arch=x86_64",
+          enabled: true,
+          autorefresh: false,
+          gpgcheck: false,
+          priority: 1
+        ),
+        Repository.new(
+          alias: "fedora-debuginfo/20/x86_64",
+          name: "Fedora 20 - x86_64 - Debug",
+          type: nil,
+          url: "https://mirrors.fedoraproject.org/metalink?repo=fedora-debug-20&arch=x86_64",
+          enabled: false,
+          autorefresh: false,
+          gpgcheck: false,
+          priority: 1
+        ),
+        Repository.new(
+          alias: "fedora-source/20/x86_64",
+          name: "Fedora 20 - Source",
+          type: nil,
+          url: "https://mirrors.fedoraproject.org/metalink?repo=fedora-source-20&arch=x86_64",
+          enabled: false,
+          autorefresh: false,
+          gpgcheck: false,
+          priority: 1
+        )
+      ])
+    }
+
     let(:credentials_directories) { "NCCcredentials\n" }
     let(:ncc_credentials) {
       <<-EOF
@@ -99,6 +177,9 @@ password=0a0918c876ef4a1d9c352e5c47421235
 
     it "returns data about repositories when requirements are fulfilled" do
       system = double
+
+      expect(system).to receive(:package_manager).and_return("zypper")
+
       expect(system).to receive(:check_requirement).with(
         "zypper", "--version"
       )
@@ -149,6 +230,8 @@ password=0a0918c876ef4a1d9c352e5c47421235
       zypper_empty_output_detail = "No repositories defined. Use the " \
         "'zypper addrepo' command to add one or more repositories."
 
+      expect(system).to receive(:package_manager).and_return("zypper")
+
       expect(system).to receive(:check_requirement).with(
         "zypper", "--version"
       )
@@ -178,6 +261,9 @@ password=0a0918c876ef4a1d9c352e5c47421235
 
     it "raise an error when requirements are not fulfilled" do
       system = double
+
+      expect(system).to receive(:package_manager).and_return("zypper")
+
       expect(system).to receive(:check_requirement).with(
         "zypper", "--version"
       ).and_raise(Machinery::Errors::MissingRequirement)
@@ -189,6 +275,7 @@ password=0a0918c876ef4a1d9c352e5c47421235
 
     it "returns sorted data" do
       system = double
+      expect(system).to receive(:package_manager).and_return("zypper")
       expect(system).to receive(:check_requirement) { true }
       expect(system).to receive(:run_command) { zypper_output_xml }
       expect(system).to receive(:run_command) { zypper_output_detail }
@@ -201,6 +288,20 @@ password=0a0918c876ef4a1d9c352e5c47421235
       names = description.repositories.map(&:name)
 
       expect(names).to eq(names.sort)
+    end
+
+    it "returns repositories on a redhat system" do
+      system = double
+      expect(system).to receive(:package_manager).and_return("yum")
+      expect(system).to receive(:check_requirement) { true }
+      expect(system).to receive(:run_command).with(
+        "yum", "repolist", "-v", "all", :stdout => :capture
+      ).and_return(yum_output)
+
+      inspector = RepositoriesInspector.new
+      summary = inspector.inspect(system, description)
+      expect(description.repositories).to eq(expected_yum_repo_list)
+      expect(summary).to include("Found 3 repositories")
     end
   end
 end

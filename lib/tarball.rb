@@ -33,12 +33,18 @@ class Tarball
           # This may fail for files with "->" in their name, but there is no way
           # how to avoid this when using "tar".
           path = rest.join(" ").split(" -> ").first
+        when "h"
+          type = :link
+          # This may fail for files with "link to" in their name, but there is no way
+          # how to avoid this when using "tar".
+          path = rest.join(" ").split(" link to ").first
         when "d"
           type = :dir
           path = rest.join(" ")[0..-2]   # Strip trailing "/".
         else
           type = :file
           path = rest.join(" ")
+          puts path if path.include?("link to")
       end
 
       user, group = user_and_group.split("/")

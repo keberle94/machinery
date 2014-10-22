@@ -17,6 +17,22 @@
 
 class PatternsInspector < Inspector
   def inspect(system, description, options = {})
+    package_manager = system.package_manager
+    if package_manager == "yum"
+      inspect_redhat(system, description, options)
+    elsif package_manager == "zypper"
+      inspect_suse(system, description, options)
+    else
+      raise Machinery::Errors::MachineryError.new("Cannot inspect patterns because neither 'zypper' nor 'yum' were found.")
+    end
+  end
+
+  def inspect_redhat(system, description, options = {})
+    description.patterns = PatternsScope.new()
+    return "Found 0 patterns."
+  end
+
+  def inspect_suse(system, description, options = {})
     system.check_requirement("zypper", "--version")
 
     xml = system.run_command("zypper", "-xq", "patterns", "-i", :stdout => :capture)

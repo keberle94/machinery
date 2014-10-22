@@ -45,6 +45,14 @@ autofs                    off
 EOF
     }
 
+    let(:chkconfig_redhat_output) {
+      <<-EOF
+crond           0:off   1:off   2:on    3:on    4:on    5:on    6:off
+dnsmasq         0:off   1:off   2:off   3:off   4:off   5:off   6:off
+EOF
+    }
+
+
     it "returns data about systemd services when systemd is present" do
       system = double
       expect(system).to receive(:run_command).
@@ -76,6 +84,9 @@ EOF
       expect(system).to receive(:run_command).
         with("systemctl", "--version").
         and_raise(Cheetah::ExecutionFailed.new(nil, nil, nil, nil))
+      expect(system).to receive(:run_command).
+        with("chkconfig", "--version").
+        and_raise(Cheetah::ExecutionFailed.new(nil, nil, nil, nil))
       expect(system).to receive(:check_requirement).
         with("chkconfig", "--help")
       expect(system).to receive(:run_command).
@@ -101,6 +112,9 @@ EOF
       expect(system).to receive(:run_command).
         with("systemctl", "--version").
         and_raise(Cheetah::ExecutionFailed.new(nil, nil, nil, nil))
+      expect(system).to receive(:run_command).
+        with("chkconfig", "--version").
+        and_raise(Cheetah::ExecutionFailed.new(nil, nil, nil, nil))
       expect(system).to receive(:check_requirement).
         with("chkconfig", "--help").
         and_raise(Machinery::Errors::MissingRequirement)
@@ -108,6 +122,36 @@ EOF
       expect {
         inspector.inspect(system, description)
       }.to raise_error(Machinery::Errors::MissingRequirement)
+    end
+
+    it "returns data about SysVinit services on a redhat system" do
+      system = double
+      expect(system).to receive(:run_command).
+        with("systemctl", "--version").
+        and_raise(Cheetah::ExecutionFailed.new(nil, nil, nil, nil))
+      expect(system).to receive(:run_command).
+        with("chkconfig", "--version").
+        and_return("chkconfig version 1.3.49.3")
+      expect(system).to receive(:check_requirement).
+        with("chkconfig", "--version")
+      expect(system).to receive(:check_requirement).
+        with("runlevel")
+      expect(system).to receive(:run_command).
+        with("runlevel", :stdout => :capture).
+        and_return("N 5")
+      expect(system).to receive(:run_command).
+        with("chkconfig", "--list", :stdout => :capture).
+        and_return(chkconfig_redhat_output)
+      summary = inspector.inspect(system, description)
+
+      expect(description.services).to eq(ServicesScope.new(
+        init_system: "sysvinit",
+        services:    ServiceList.new([
+          Service.new(name: "crond", state: "on"),
+          Service.new(name: "dnsmasq", state: "off"),
+        ])
+      ))
+      expect(summary).to eq("Found 2 services.")
     end
   end
 end

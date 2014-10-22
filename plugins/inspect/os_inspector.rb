@@ -66,6 +66,11 @@ class OsInspector < Inspector
       os = get_os_from_suse_release(system)
     end
 
+    # Fall back to redhat-release file
+    if !os
+      os = get_os_from_redhat_release(system)
+    end
+
     os
   end
 
@@ -113,4 +118,16 @@ class OsInspector < Inspector
     end
     OsScope.new(result)
   end
+
+  # checks for redhat standard: /etc/redhat-release
+  def get_os_from_redhat_release(system)
+    redhat_release = system.read_file("/etc/redhat-release")
+    return if !redhat_release
+
+    result = Hash.new
+    result["name"], result["version"] = redhat_release.split("\n").first.split(" release ")
+
+    OsScope.new(result)
+  end
+
 end

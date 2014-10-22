@@ -22,6 +22,11 @@ class ServicesInspector < Inspector
         init_system: "systemd",
         services:    inspect_systemd_services(system)
       )
+    elsif has_redhat_chkconfig(system)
+      result = ServicesScope.new(
+        init_system: "sysvinit",
+        services:    inspect_sysvinit_redhat_services(system)
+      )
     else
       result = ServicesScope.new(
         init_system: "sysvinit",
@@ -37,6 +42,13 @@ class ServicesInspector < Inspector
 
   def has_systemd(system)
     system.run_command("systemctl", "--version")
+    true
+  rescue Cheetah::ExecutionFailed
+    false
+  end
+
+  def has_redhat_chkconfig(system)
+    system.run_command("chkconfig", "--version")
     true
   rescue Cheetah::ExecutionFailed
     false
@@ -85,4 +97,31 @@ class ServicesInspector < Inspector
 
     ServiceList.new(services.sort_by(&:name))
   end
+
+  def inspect_sysvinit_redhat_services(system)
+    system.check_requirement("chkconfig", "--version")
+    system.check_requirement("runlevel")
+
+    output = system.run_command(
+      "chkconfig", "--list",
+      :stdout => :capture
+    )
+
+    previouslevel,runlevel = system.run_command(
+      "runlevel",
+      :stdout => :capture
+    ).split(" ")
+
+
+    @summary = "Found #{output.lines.size} services."
+
+    services = output.lines.map do |line|
+      state=[]
+      name, state[0], state[1], state[2], state[3], state[4], state[5], state[6] = line.split(/\s+/)
+      Service.new(name: name, state: state[runlevel.to_i].split(":")[1])
+    end
+
+    ServiceList.new(services.sort_by(&:name))
+  end
+
 end

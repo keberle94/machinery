@@ -19,6 +19,68 @@ require "nokogiri"
 
 class RepositoriesInspector < Inspector
   def inspect(system, description, options = {})
+    package_manager = system.package_manager
+    if package_manager == "yum"
+      inspect_redhat(system, description, options)
+    elsif package_manager == "zypper"
+      inspect_suse(system, description, options)
+    else
+      raise Machinery::Errors::MachineryError.new("Cannot inspect repositories because neither 'zypper' nor 'yum' were found.")
+    end
+  end
+
+  def inspect_redhat(system, description, options = {})
+    system.check_requirement("yum", "--version")
+
+    output = system.run_command("yum", "repolist", "-v", "all", :stdout => :capture)
+
+    result = []
+    rep = {}
+    output.each_line do |line|
+      key, value = line.split(":", 2)
+
+      case key.strip
+      when "Repo-id"
+        rep["alias"] = value.strip
+      when "Repo-name"
+        rep["name"] = value.strip
+      when "Repo-status"
+        rep["enabled"] = value.strip == "enabled"
+      when "Repo-baseurl"
+        rep["url"] = value.strip unless rep["url"] # don't overwrite url if already set by Repo-metalink
+      when "Repo-metalink"
+        rep["url"] = value.strip
+      when ""
+        if rep["alias"]
+          repository = Repository.new(
+            alias:       rep["alias"],
+            name:        rep["name"],
+            type:        rep["type"],
+            url:         rep["url"],
+            enabled:     rep["enabled"],
+            autorefresh: rep["autorefresh"],
+            gpgcheck:    rep["gpgcheck"],
+            priority:    rep["priority"]
+          )
+          result << repository
+          rep = {}
+        end
+      end
+
+      # TODO
+      # http://docs.fedoraproject.org/en-US/Fedora/15/html/Musicians_Guide/sect-Musicians_Guide-CCRMA_Repository_Priorities.html
+      rep["autorefresh"] = false
+      rep["gpgcheck"] = false
+      rep["priority"] = 1
+      # rep["type"] = "yum"
+    end
+
+    summary = "Found #{result.count} repositories."
+    description.repositories = RepositoriesScope.new(result)
+    summary
+  end
+
+  def inspect_suse(system, description, options = {})
     system.check_requirement("zypper", "--version")
 
     xml = system.run_command(

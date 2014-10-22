@@ -55,6 +55,7 @@ describe PatternsInspector do
 
   describe "#inspect" do
     it "parses the patterns list into a Hash" do
+      expect(system).to receive(:package_manager).and_return("zypper")
       expect(system).to receive(:run_command).
         with("zypper", "-xq", "patterns", "-i", {:stdout=>:capture}).
         and_return(zypper_output)
@@ -73,6 +74,7 @@ describe PatternsInspector do
     end
 
     it "returns an empty array when there are no patterns installed" do
+      expect(system).to receive(:package_manager).and_return("zypper")
       expect(system).to receive(:run_command).and_return("")
 
       patterns_inspector.inspect(system, description)
@@ -80,11 +82,20 @@ describe PatternsInspector do
     end
 
     it "returns sorted data" do
+      expect(system).to receive(:package_manager).and_return("zypper")
       expect(system).to receive(:run_command).and_return(zypper_output)
 
       patterns_inspector.inspect(system, description)
       names = description.patterns.map(&:name)
       expect(names).to eq(names.sort)
+    end
+
+    it "returns no patterns on a redhat system" do
+      expect(system).to receive(:package_manager).and_return("yum")
+      summary = patterns_inspector.inspect(system, description)
+
+      expect(description.patterns.size).to eql(0)
+      expect(summary).to include("Found 0 patterns")
     end
   end
 end

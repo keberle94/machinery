@@ -78,4 +78,19 @@ class System
 
     run_command("bash", "-c", script, *args)
   end
+
+  def package_manager
+    begin
+      run_command("ls", "/usr/bin/zypper", "/usr/bin/yum", :stdout => :capture)
+      manager = ""
+    rescue Cheetah::ExecutionFailed => e
+      manager = e.stdout
+    end
+
+    if manager.include?("yum")
+      return "yum"
+    elsif manager.include?("zypper")
+      return "zypper"
+    end
+  end
 end

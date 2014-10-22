@@ -67,6 +67,17 @@ describe OsInspector do
     end
   end
 
+  describe "#get_os_from_redhat_release" do
+    it "gets os info from SuSE-release file" do
+      FakeFS::FileSystem.clone("spec/data/os/rhel6/etc/redhat-release",
+        "/etc/redhat-release")
+      os = inspector.send(:get_os_from_redhat_release, system)
+
+      expect(os.name).to eq "Red Hat Enterprise Linux Server"
+      expect(os.version).to eq "6.5 (Santiago)"
+    end
+  end
+
   describe ".inspect" do
     it "returns data about the operation system on a system with os-release" do
       FakeFS::FileSystem.clone("spec/data/os/openSUSE13.1/etc/os-release",
@@ -100,6 +111,20 @@ describe OsInspector do
       expect(description.os.version).to eq "11 SP3"
       expect(description.os.architecture).to eq "x86_64"
       expect(summary).to include("SUSE Linux Enterprise Server")
+    end
+
+    it "returns data about the operation system on a system with redhat-release" do
+      FakeFS::FileSystem.clone("spec/data/os/rhel6/etc/redhat-release",
+        "/etc/redhat-release")
+
+      expect(inspector).to receive(:get_arch).with(system).and_return("x86_64")
+
+      summary = inspector.inspect(system, description)
+
+      expect(description.os.name).to eq "Red Hat Enterprise Linux Server"
+      expect(description.os.version).to eq "6.5 (Santiago)"
+      expect(description.os.architecture).to eq "x86_64"
+      expect(summary).to include("Red Hat Enterprise Linux Server")
     end
 
     it "returns data containing additional version information if available" do
