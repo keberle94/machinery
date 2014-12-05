@@ -121,13 +121,15 @@ class OsInspector < Inspector
 
   # checks for redhat standard: /etc/redhat-release
   def get_os_from_redhat_release(system)
+    Machinery.logger.info( "HERE!")
     redhat_release = system.read_file("/etc/redhat-release")
     return if !redhat_release
 
     result = Hash.new
     result["name"], result["version"] = redhat_release.split("\n").first.split(" release ")
 
-    OsScope.new(result)
+    os = Os.for(result["name"])
+    os.version = result["version"]
+    os
   end
-
 end
