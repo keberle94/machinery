@@ -183,6 +183,40 @@ describe KiwiConfig do
     EOF
   }
 
+  let(:system_description_with_content_sles12) {
+    create_test_description(json: <<-EOF, name: name, store: store)
+      {
+        "packages": [
+          {
+            "name": "kernel-desktop",
+            "version": "3.7.10",
+            "release": "1.0",
+            "arch": "x86_64",
+            "vendor": "SUSE LINUX Products GmbH, Nuernberg, Germany",
+            "checksum": "2a3d5b29179daa1e65e391d0a0c1442d"
+          }
+        ],
+        "repositories": [
+          {
+            "alias": "disabled_repo_alias",
+            "name": "disabled_repo",
+            "type": null,
+            "url": "http://disabled_repo",
+            "enabled": false,
+            "autorefresh": false,
+            "gpgcheck": true,
+            "priority": 3
+          }
+        ],
+        "os": {
+          "name": "SUSE Linux Enterprise Server 12",
+          "version": "12",
+          "architecture": "x86_64"
+        }
+      }
+    EOF
+  }
+
   let(:system_description_with_sysvinit_services) {
     create_test_description(json: <<-EOF, name: name, store: store)
       {
@@ -422,6 +456,40 @@ describe KiwiConfig do
     EOF
   }
 
+  let(:system_description_minimal) {
+    create_test_description(json: <<-EOF, name: name, store: store)
+      {
+        "packages": [
+          {
+            "name": "kernel-desktop-base",
+            "version": "3.7.10",
+            "release": "1.0",
+            "arch": "x86_64",
+            "vendor": "SUSE LINUX Products GmbH, Nuernberg, Germany",
+            "checksum": "2a3d5b29179daa1e65e391d0a0c1442d"
+          }
+        ],
+        "repositories": [
+          {
+            "alias": "Alias With Spaces",
+            "name": "nodejs",
+            "type": "rpm-md",
+            "url": "http://download.opensuse.org/repositories/devel:/languages:/nodejs/openSUSE_13.1/",
+            "enabled": true,
+            "autorefresh": false,
+            "gpgcheck": true,
+            "priority": 1
+          }
+        ],
+        "os": {
+          "name": "SUSE Linux Enterprise Server 11",
+          "version": "11 SP3",
+          "architecture": "x86_64"
+        }
+      }
+    EOF
+  }
+
   before(:each) do
     FakeFS::FileSystem.clone(File.join(Machinery::ROOT, "kiwi_helpers"))
     FakeFS::FileSystem.clone(File.join(
@@ -435,19 +503,22 @@ describe KiwiConfig do
   describe "#initialize" do
     it "raises exception when OS is not supported for building" do
       class OsOpenSuse99_1 < Os
-        def initialize
-          @can_build = []
-          @name = "openSUSE 99.1 (Repetition)"
+        def self.canonical_name
+          "openSUSE 99.1 (Repetition)"
+        end
+
+        def self.can_run_machinery?
+          false
         end
       end
 
-      allow_any_instance_of(SystemDescription).to receive(:os_object).
+      allow_any_instance_of(SystemDescription).to receive(:os).
         and_return(OsOpenSuse99_1.new)
       system_description_with_content.os.name = "openSUSE 99.1 (Repetition)"
       expect {
         KiwiConfig.new(system_description_with_content)
       }.to raise_error(
-         Machinery::Errors::KiwiExportFailed,
+         Machinery::Errors::ExportFailed,
          /openSUSE 99.1/
       )
     end
@@ -514,6 +585,17 @@ describe KiwiConfig do
       expect(config.sh).not_to include("https://nu.novell.com/")
     end
 
+    it "escapes the repository aliases in the config.xml file" do
+      config = KiwiConfig.new(system_description_minimal)
+      repositories = config.xml.xpath("/image/repository")
+
+      # escapes the alias in the xml
+      expect(repositories[0].attr("alias")).to eq("Alias-With-Spaces")
+
+      # doesn't escape the alias in the config.sh
+      expect(config.sh).to include("Alias With Spaces")
+    end
+
     it "applies sysvinit services to kiwi config" do
       config = KiwiConfig.new(system_description_with_sysvinit_services)
 
@@ -550,7 +632,7 @@ describe KiwiConfig do
       system_description_with_systemd_services.services.services.first["state"] = "not_known"
       expect {
         KiwiConfig.new(system_description_with_systemd_services)
-      }.to raise_error(Machinery::Errors::KiwiExportFailed, /not_known/)
+      }.to raise_error(Machinery::Errors::ExportFailed, /not_known/)
     end
 
     it "sets the target distribution and bootloader for openSUSE 13.1" do
@@ -563,8 +645,7 @@ describe KiwiConfig do
     end
 
     it "sets the target distribution and bootloader for SLES12" do
-      system_description_with_content.os.name = "SUSE Linux Enterprise Server 12"
-      config = KiwiConfig.new(system_description_with_content)
+      config = KiwiConfig.new(system_description_with_content_sles12)
       type_node = config.xml.xpath("/image/preferences/type")[0]
 
       expect(type_node["boot"]).to eq("vmxboot/suse-SLES12")

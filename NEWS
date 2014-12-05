@@ -1,6 +1,24 @@
 # Machinery Release Notes
 
 
+## Version 1.1.1 - Tue Dec 02 13:24:38 CET 2014 - thardeck@suse.de
+
+* Skip Gnome Virtual File System mounts on inspection (issue #393)
+* Skip special file systems like proc, devtmpfs and so on (issue #384)
+* Show names of packages where changed config files come from (issue #392)
+
+## Version 1.1.0 - Mon Nov 17 16:30:44 CET 2014 - thardeck@suse.de
+
+* File extraction status is now shown in the comparison output
+* Fixed image building issue when the repository alias consisted spaces
+* Fixed compare output for unmanaged-files
+* Added hint for analyze how to show the diffs
+* Added hint to recommend ssh-copy-id if passwordless logins are not possible
+
+## Version 1.0.1 - Tue Oct 28 16:24:16 CET 2014 - thardeck@suse.de
+
+* Added autofs to the remote file system filter
+
 ## Version 1.0.0 - Tue Oct 14 12:41:35 CEST 2014 - thardeck@suse.de
 
 * SLES12 release version

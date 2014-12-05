@@ -13,3 +13,6 @@ Style/Blocks:
 
 Style/AlignParameters:
   Enabled: false
+
+Style/CollectionMethods:
+  Enabled: false

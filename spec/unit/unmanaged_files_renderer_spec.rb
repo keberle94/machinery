@@ -22,10 +22,14 @@ describe UnmanagedFilesRenderer do
     create_test_description(json: <<-EOF)
     {
       "unmanaged_files": {
-        "extracted": true,
+        "extracted": false,
         "files": [
           {
             "name": "/boot/backup_mbr",
+            "type": "file"
+          },
+          {
+            "name": "/boot/message",
             "type": "file"
           }
         ]
@@ -93,10 +97,26 @@ describe UnmanagedFilesRenderer do
     EOF
   }
 
+  let(:empty_description) {
+    create_test_description(json: <<-EOF)
+    {
+      "unmanaged_files": {
+        "extracted": true
+      }
+    }
+    EOF
+  }
+
   describe "#render" do
-    it "prints a file without meta data if non exists" do
+    it "prints a list of files without meta data if non exists" do
       actual_output = UnmanagedFilesRenderer.new.render(description_without_meta)
-      expect(actual_output).to include("/boot/backup_mbr (file)")
+      expect(actual_output).
+        to match(/\/boot\/backup_mbr\ \(file\)\n[^\n]+\/boot\/message\ \(file\)/)
+    end
+
+    it "shows the extraction status" do
+      actual_output = UnmanagedFilesRenderer.new.render(description_without_meta)
+      expect(actual_output).to include("Files extracted: no")
     end
 
     it "prints a link with meta data" do
@@ -120,6 +140,12 @@ describe UnmanagedFilesRenderer do
       expect(actual_output).to include("User/Group: root:root")
       expect(actual_output).to include("Size: 11.7 KiB")
       expect(actual_output).to include("Files: 2")
+    end
+
+    it "does not choke on missing file list" do
+      expect {
+        UnmanagedFilesRenderer.new.render(empty_description)
+      }.to_not raise_error
     end
   end
 end

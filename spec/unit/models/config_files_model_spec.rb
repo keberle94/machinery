@@ -24,7 +24,12 @@ describe "config_files model" do
   }
 
   it_behaves_like "Scope"
+  it_behaves_like "FileScope"
 
   specify { expect(scope.files).to be_a(ConfigFileList) }
   specify { expect(scope.files.first).to be_a(ConfigFile) }
+
+  it "has correct scope name" do
+    expect(ConfigFilesScope.new.scope_name).to eq("config_files")
+  end
 end

@@ -37,6 +37,14 @@ class Cli
 
   post do |global_options,command,options,args|
     if command.is_a?(GLI::Commands::Help) && !global_options[:version]
+
+      Machinery::Ui.puts "\nMachinery can show hints which guide through a typical workflow."
+      if Machinery::Config.new.hints
+        Machinery::Ui.puts "These hints can be switched off by '#{$0} config hints off'."
+      else
+        Machinery::Ui.puts "These hints can be switched on by '#{$0} config hints on'."
+      end
+
       Hint.get_started
     end
   end
@@ -46,7 +54,7 @@ class Cli
   def self.handle_error(e)
     case e
     when GLI::UnknownCommandArgument, GLI::UnknownGlobalArgument,
-        GLI::UnknownCommand, GLI::BadCommandLine
+        GLI::UnknownCommand, GLI::BadCommandLine, OptionParser::MissingArgument
       Machinery::Ui.error e.to_s + "\n\n"
       command = ARGV & @commands.keys.map(&:to_s)
       run(command << "--help")
@@ -102,7 +110,7 @@ class Cli
 
   def self.shift_arg(args, name)
     if !res = args.shift
-      raise GLI::BadCommandLine.new("Machinery was called with missing argument #{name}.")
+      raise GLI::BadCommandLine.new("You need to provide the required argument #{name}.")
     end
     res
   end
@@ -201,6 +209,7 @@ class Cli
         when "config-file-diffs"
           task = AnalyzeConfigFileDiffsTask.new
           task.analyze(description)
+          Hint.show_analyze_data(name: name)
         else
           raise Machinery::Errors::InvalidCommandLine.new(
             "The operation '#{options[:operation]}' is not supported. " \
@@ -350,9 +359,42 @@ class Cli
       name = shift_arg(args, "NAME")
       store = SystemDescriptionStore.new
       description = store.load(name)
+      exporter = KiwiConfig.new(description)
 
-      task = KiwiExportTask.new
-      task.export(description, File.expand_path(options["kiwi-dir"]), force: options[:force])
+      task = ExportTask.new(exporter)
+      task.export(
+        File.expand_path(options["kiwi-dir"]),
+        force: options[:force]
+      )
+    end
+  end
+
+
+
+  desc "Export system description as AutoYaST profile"
+  long_desc <<-LONGDESC
+    Export system description as AutoYaST profile
+
+    The profile will be placed in the location given by the 'autoyast-dir' option.
+  LONGDESC
+  arg "NAME"
+  command "export-autoyast" do |c|
+    c.flag ["autoyast-dir", :a], type: String, required: true,
+      desc: "Location where the autoyast profile will be stored", arg_name: "DIRECTORY"
+    c.switch :force, default_value: false, required: false, negatable: false,
+      desc: "Overwrite existing profile"
+
+    c.action do |_global_options, options, args|
+      name = shift_arg(args, "NAME")
+      store = SystemDescriptionStore.new
+      description = store.load(name)
+      exporter = Autoyast.new(description)
+
+      task = ExportTask.new(exporter)
+      task.export(
+        File.expand_path(options["autoyast-dir"]),
+        force: options[:force]
+      )
     end
   end
 
@@ -437,6 +479,8 @@ class Cli
   command :list do |c|
     c.switch :verbose, :required => false, :negatable => false,
       :desc => "Display additional information about origin of scopes"
+    c.switch :quick, :required => false, :negatable => false,
+      :desc => "Show quick list without details"
 
     c.action do |global_options,options,args|
       store = SystemDescriptionStore.new
@@ -583,6 +627,10 @@ class Cli
 
       task = ConfigTask.new
       task.config(key, value)
+
+      if key == "hints" && !Machinery::Config.new.hints
+        Machinery::Ui.puts "Hints can be switched on again by '#{$0} config hints on'."
+      end
     end
   end
 end

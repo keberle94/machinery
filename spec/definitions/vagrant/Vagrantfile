@@ -10,6 +10,8 @@ def inject_test_data(base)
     mkdir /usr/local/magicapp/data
     touch /usr/local/magicapp/data/two
     touch /etc/magicapp.conf
+    mkdir /var/lib/chroot_proc
+    mount --bind /proc /var/lib/chroot_proc
 
     # config-files
     echo '-*/15 * * * *   root  echo config_files_integration_test &> /dev/null' >> /etc/crontab
@@ -45,6 +47,10 @@ def inject_test_data(base)
       /usr/sbin/rcautofs restart
     fi
     mount -t nfs 127.0.0.1:/tmp "/mnt/unmanaged/remote-dir/"
+
+    # mount proc to an uncommon directory for unmanaged-file inspector tests
+    mkdir -p "/mnt/uncommon-proc-mount"
+    mount -t proc proc /mnt/uncommon-proc-mount
   EOF
 
   base.vm.provision "shell", inline: prepare_test_environment_script
@@ -78,6 +84,36 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     end
 
     machinery_131.vm.provision "machinery_rpm"
+  end
+
+  config.vm.define :opensuse132 do |opensuse132|
+    opensuse132.vm.box = "base_opensuse13.2_kvm"
+
+    opensuse132.vm.provider :libvirt do |domain|
+      domain.memory = 1024
+      domain.cpus = 1
+      domain.nested = false
+      domain.volume_cache = 'none'
+    end
+
+    inject_test_data(opensuse132)
+  end
+
+  config.vm.define :machinery_132 do |machinery_132|
+    machinery_132.vm.box = "machinery_opensuse13.2_kvm"
+    machinery_132.vm.network :private_network, :network_name => "default"
+
+    machinery_132.vm.provider :libvirt do |domain|
+      domain.memory = 1024
+      domain.cpus = 1
+      domain.nested = false
+      domain.volume_cache = 'none'
+    end
+
+    machinery_132.vm.provision "machinery_rpm",
+      :api     => "https://api.opensuse.org",
+      :project => "systemsmanagement:machinery",
+      :package => "openSUSE_13.2"
   end
 
   # The url from where the 'config.vm.box' box will be fetched if it

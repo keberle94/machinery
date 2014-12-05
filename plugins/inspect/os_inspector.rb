@@ -47,8 +47,7 @@ class OsInspector < Inspector
       os.version += get_additional_version(system)
       summary = "Found operating system '#{os.name}' version '#{os.version}'."
     else
-      os = OsScope.new(name: nil, version: nil, architecture: nil)
-      summary = "Could not determine the operating system."
+      raise Machinery::Errors::UnknownOs
     end
 
     description.os = os
@@ -89,10 +88,9 @@ class OsInspector < Inspector
     end
     # return pretty_name as name as it contains the actual full length
     # name instead of an abbreviation
-    OsScope.new(
-      name:         result["pretty_name"],
-      version:      result["version"]
-    )
+    os = Os.for(result["pretty_name"])
+    os.version = result["version"]
+    os
   end
 
   # checks for old suse standard: /etc/SuSE-release
@@ -116,7 +114,9 @@ class OsInspector < Inspector
     if result["version"] && !patch.nil?
       result["version"] = "#{result["version"]} SP#{patch}"
     end
-    OsScope.new(result)
+    os = Os.for(result["name"])
+    os.version = result["version"]
+    os
   end
 
   # checks for redhat standard: /etc/redhat-release

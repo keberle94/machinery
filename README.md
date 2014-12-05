@@ -1,6 +1,7 @@
 # Machinery
 
 [![Code Climate](https://codeclimate.com/github/SUSE/machinery/badges/gpa.svg)](https://codeclimate.com/github/SUSE/machinery)
+[![Gem Version](https://badge.fury.io/rb/machinery-tool.svg)](http://badge.fury.io/rb/machinery-tool)
 
 Machinery is a systems management toolkit for Linux. It supports configuration
 discovery, system validation, and service migration. It's based on the idea of a
@@ -21,7 +22,7 @@ For more information, [visit our website](http://machinery-project.org/).
 ## Installation
 
 Machinery is tested and supported on [openSUSE13.1](http://en.opensuse.org/Portal:13.1)
-and SLES 12.
+and SLES 12. It is also supported on [openSUSE13.2](http://en.opensuse.org/Portal:13.2).
 It will not run on other openSUSE versions, Linux distributions, or
 operating systems.
 
