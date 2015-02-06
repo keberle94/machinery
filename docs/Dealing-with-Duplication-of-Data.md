@@ -2,23 +2,22 @@
 
 ## Current Situation
 
-When a system is inspected some data is duplicated. This happens when multiple scopes handle and store the same information.
+When a system is inspected some data is duplicated. This happens for example when multiple scopes handle and store the same information.
 An example is repositories: The repositories are queried and then stored in `manifest.json` by the repositories scope.
 Additionally the files in `/etc/zypp/repos.d` contain the same information and are handled by unmanaged-files.
 Another example are users and groups, which are handled by the scopes 'users' and 'groups'. The files `/etc/passwd`,
-`/etc/shadow`, and `/etc/group` contain the same information. Configuration files are handled by the scope changed-configuration-files.
+`/etc/shadow`, and `/etc/group` contain the same information. Configuration files are handled by the scope config-files.
 
-Duplication of this data leads to problems like the same repository appearing multiple times on a build image.
+Duplication of this data leads to problems like the same repository appearing multiple times on a build image because it's applied by the config-files and the repositories scope.
 
 
 ## Current Approach
 
-Currently a hard coded list of files is used to filters out the problematic files when an image is build, a kiwi or AutoYaST profile is exported.
-This makes sure the data is not duplicated.
+Currently a hard coded list of files is used to filters out the problematic files when an image is build, a kiwi or AutoYaST profile is exported. So, the current approach tries no
+to apply config files when they are already covered on an more abstract level. This makes sure the data is not duplicated.
 
 
 ## Underlying Reason
-
 
 Depending on the use case different levels of abstraction of the data are needed:
 
@@ -39,7 +38,7 @@ It makes sense to store all levels of abstraction during inspection and decide w
   * Creation of a system description using an editor
   * Composition of a system description using hierarchical templates
   * Import from a different format (e.g. kiwi, AutoYaST)
-* Configuration files can consist of data which is covered on a more abstract level and data which is not. This means need to retrieve this file in order to not lose the uncovered data. 
+* Configuration files can consist of data which is covered on a more abstract level and data which is not. This means we need to retrieve this file in order to not lose the uncovered data.
 
 
 
