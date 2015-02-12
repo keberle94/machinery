@@ -48,6 +48,25 @@ class Html
     Kramdown::Document.new(text).to_html
   end
 
+  def self.service_state_help(state)
+    case state
+    when "enabled" || "enabled-runtime"
+      return 'Enabled through a symlink in .wants directory (permanently or just in /run).'
+    when "linked" || "linked-runtime"
+      return 'Made available through a symlink to the unit file (permanently or just in /run).'
+    when "masked" || "masked-runtime"
+      return 'Disabled entirely (permanently or just in /run).'
+    when "static"
+      return 'Unit file is not enabled, and has no provisions for enabling in the "[Install]" section.'
+    when "indirect"
+      return 'Unit file itself is not enabled, but it has a non-empty Also= setting in the "[Install]" section, listing other unit files that might be enabled.'
+    when "disabled"
+      return 'Unit file is not enabled.'
+    else
+      return "Unknown: #{state}"
+    end
+  end
+
   def self.diff_to_object(diff)
     lines = diff.lines[2..-1]
     diff_object = {

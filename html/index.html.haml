@@ -414,7 +414,9 @@
                 {{#services.services}}
                 %tr
                   %td {{name}}
-                  %td {{state}}
+                  %td
+                    %div{:class=>"over", :"data-toggle"=>"popover", :title=>"#{service_state_help("{{state}}")}"}
+                      {{state}}
                 {{/services.services}}
       {{/services.services.length}}
 

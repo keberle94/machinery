@@ -106,4 +106,11 @@ EOF
       expect(@diff_object[:lines]).to eq(expected[:lines])
     end
   end
+
+  describe ".service_state_help" do
+    it "returns help for a service state" do
+      help = Html.service_state_help("masked")
+      expect(help).to eq("Disabled entirely (permanently or just in /run).")
+    end
+  end
 end
