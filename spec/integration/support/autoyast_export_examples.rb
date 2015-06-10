@@ -42,6 +42,13 @@ shared_examples "autoyast export" do
         as: machinery_config[:owner]
       ).split("\n")
       expect(file_list).to include("autoinst.xml")
+
+      autoyast_content = @machinery.run_command(
+        "cat /tmp/jeos-autoyast/autoinst.xml",
+        stdout: :capture,
+        as: machinery_config[:owner]
+      )
+      expect(autoyast_content).to include("ln -s /opt/test-quote-char/target-with-quote\'-foo /opt/test-quote-char/link")
     end
   end
 end
