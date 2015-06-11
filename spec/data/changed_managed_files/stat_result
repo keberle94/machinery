@@ -3,3 +3,4 @@
 400:wwwrun:wwwrun:1001:1002:regular file:/etc/apache2/de:fault server.conf
 400:wwwrun:wwwrun:1001:1002:regular file:/usr/share/man/man1/time.1.gz
 755:root:root:1001:1002:symbolic link:/usr/bin/crontab
+777:root:0:0:symbolic link:/opt/test-quote-char/link

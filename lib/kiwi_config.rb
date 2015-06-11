@@ -103,18 +103,24 @@ class KiwiConfig < Exporter
 
       @system_description[scope].files.each do |file|
         if file.deleted?
-          @sh << "rm -rf '#{file.name}'\n"
+          @sh << "rm -rf '#{Machinery.escape_single_quotes(file.name)}'\n"
         elsif file.directory?
-          @sh << "chmod #{file.mode} '#{file.name}'\n"
-          @sh << "chown #{file.user}:#{file.group} '#{file.name}'\n"
+          @sh << <<EOF
+chmod #{file.mode} '#{Machinery.escape_single_quotes(file.name)}'
+chown #{file.user}:#{file.group} '#{Machinery.escape_single_quotes(file.name)}'
+EOF
         elsif file.file?
           Machinery::SystemFileUtils.write_file(file, output_root_path)
-          @sh << "chmod #{file.mode} '#{file.name}'\n"
-          @sh << "chown #{file.user}:#{file.group} '#{file.name}'\n"
+          @sh << <<EOF
+chmod #{file.mode} '#{Machinery.escape_single_quotes(file.name)}'
+chown #{file.user}:#{file.group} '#{Machinery.escape_single_quotes(file.name)}'
+EOF
         elsif file.link?
-          @sh << "rm -rf '#{file.name}'\n"
-          @sh << "ln -s '#{file.target}' '#{file.name}'\n"
-          @sh << "chown --no-dereference #{file.user}:#{file.group} '#{file.name}'\n"
+          @sh << <<EOF
+rm -rf '#{Machinery.escape_single_quotes(file.name)}'
+ln -s '#{Machinery.escape_single_quotes(file.target)}' '#{Machinery.escape_single_quotes(file.name)}'
+chown --no-dereference #{file.user}:#{file.group} '#{Machinery.escape_single_quotes(file.name)}'
+EOF
         end
       end
     end

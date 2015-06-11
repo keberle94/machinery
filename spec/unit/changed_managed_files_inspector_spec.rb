@@ -29,11 +29,14 @@ describe ChangedManagedFilesInspector do
     inspector = ChangedManagedFilesInspector.new(system, description)
 
     allow(system).to receive(:check_requirement).at_least(:once)
-    allow(system).to receive(:run_script).with("changed_managed_files.sh", anything()).and_return(rpm_result)
+    allow(system).to receive(:run_script).with(
+      "changed_managed_files.sh", anything
+    ).and_return(rpm_result)
     allow(system).to receive(:run_command).with("stat", "--printf",
       "%a:%U:%G:%u:%g:%F:%n\\n", "/etc/iscsi/iscsid.conf",
       "/etc/apache2/de:fault server.conf", "/etc/apache2/listen.conf",
-      "/usr/share/man/man1/time.1.gz", "/usr/bin/crontab", anything()).and_return(stat_result)
+      "/usr/share/man/man1/time.1.gz", "/usr/bin/crontab", "/opt/test-quote-char/link",
+      anything).and_return(stat_result)
     allow(system).to receive(:run_command).with("find", "/usr/bin/crontab", any_args).
       and_return("/etc/foo")
 
@@ -88,6 +91,13 @@ describe ChangedManagedFilesInspector do
             package_version: "3.5.10",
             status: "changed",
             changes: ["deleted"]
+          ),
+          ChangedManagedFile.new(
+            name: "/opt/test-quote-char/link",
+            package_name: "test-quote-char-1.0.",
+            package_version: "1",
+            status: "changed",
+            changes: ["link_path"]
           ),
           ChangedManagedFile.new(
             name: "/usr/bin/crontab",

@@ -267,20 +267,26 @@ class Autoyast < Exporter
 
     @system_description[scope].files.each do |file|
       if file.deleted?
-        @chroot_scripts << "rm -rf '#{file.name}'"
+        @chroot_scripts << "rm -rf '#{Machinery.escape_single_quotes(file.name)}'"
       elsif file.directory?
-        @chroot_scripts << "chmod #{file.mode} '#{File.join("/mnt", file.name)}'"
-        @chroot_scripts << "chown #{file.user}:#{file.group} '#{File.join("/mnt", file.name)}'"
+        @chroot_scripts << <<EOF.strip
+chmod #{file.mode} '#{Machinery.escape_single_quotes(File.join('/mnt', file.name))}'
+chown #{file.user}:#{file.group} '#{Machinery.escape_single_quotes(File.join('/mnt', file.name))}'
+EOF
       elsif file.file?
         url = "`cat /tmp/description_url`/#{URI.escape(File.join(scope, file.name))}"
-        @chroot_scripts << "mkdir -p '#{File.join("/mnt", File.dirname(file.name))}'"
-        @chroot_scripts << "curl -o '#{File.join("/mnt", file.name)}' \"#{url}\""
-        @chroot_scripts << "chmod #{file.mode} '#{File.join("/mnt", file.name)}'"
-        @chroot_scripts << "chown #{file.user}:#{file.group} '#{File.join("/mnt", file.name)}'"
+        @chroot_scripts << <<EOF.strip
+mkdir -p '#{Machinery.escape_single_quotes(File.join('/mnt', File.dirname(file.name)))}'
+curl -o '#{Machinery.escape_single_quotes(File.join('/mnt', file.name))}' \"#{url}\"
+chmod #{file.mode} '#{Machinery.escape_single_quotes(File.join('/mnt', file.name))}'
+chown #{file.user}:#{file.group} '#{Machinery.escape_single_quotes(File.join('/mnt', file.name))}'
+EOF
       elsif file.link?
-        @chroot_scripts << "rm -rf '#{File.join("/mnt", file.name)}'"
-        @chroot_scripts << "ln -s '#{file.target}' '#{File.join("/mnt", file.name)}'"
-        @chroot_scripts << "chown --no-dereference #{file.user}:#{file.group} '#{File.join("/mnt", file.name)}'"
+        @chroot_scripts << <<EOF.strip
+rm -rf '#{Machinery.escape_single_quotes(File.join('/mnt', file.name))}'
+ln -s '#{Machinery.escape_single_quotes(file.target)}' '#{Machinery.escape_single_quotes(File.join('/mnt', file.name))}'
+chown --no-dereference #{file.user}:#{file.group} '#{Machinery.escape_single_quotes(File.join('/mnt', file.name))}'
+EOF
       end
     end
   end

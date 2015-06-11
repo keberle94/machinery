@@ -39,6 +39,10 @@ module Machinery
       text
     end
   end
+
+  def self.escape_single_quotes(text)
+    text.gsub("'", "\\\\'")
+  end
 end
 
 def with_c_locale(&block)
