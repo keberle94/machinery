@@ -15,6 +15,11 @@
 # To contact SUSE about this file by physical or electronic mail,
 # you may find current contact information at www.suse.com
 
+require "simplecov"
+SimpleCov.start do
+  add_filter "spec/"
+end
+
 require "fakefs/spec_helpers"
 require "given_filesystem/spec_helpers"
 

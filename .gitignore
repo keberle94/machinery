@@ -9,3 +9,4 @@ iso
 box_state.yaml
 import_state.yaml
 .vagrant
+coverage
