@@ -71,7 +71,7 @@ shared_examples "CLI" do
         expect { @machinery.run_command(
           "sudo #{machinery_command} inspect localhost --scope=foobar --name=test",
           as: "vagrant",
-          stdout: :capture
+          stderr: :capture
         ) }.to raise_error(Pennyworth::ExecutionFailed, /The following scope is not supported: foobar/)
       end
     end
@@ -81,7 +81,7 @@ shared_examples "CLI" do
         expect { @machinery.run_command(
           "#{machinery_command} build test",
           as: "vagrant",
-          stdout: :capture
+          stderr: :capture
         ) }.to raise_error(Pennyworth::ExecutionFailed, /image-dir is required/)
       end
 
@@ -89,7 +89,7 @@ shared_examples "CLI" do
         expect { @machinery.run_command(
           "#{machinery_command} build --image-dir=/tmp/",
           as: "vagrant",
-          stdout: :capture
+          stderr: :capture
         ) }.to raise_error(Pennyworth::ExecutionFailed, /You need to provide the required argument/)
       end
     end

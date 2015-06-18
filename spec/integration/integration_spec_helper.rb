@@ -31,8 +31,8 @@ def prepare_machinery_for_host(system, ip, opts = {})
 end
 
 def prepare_local_machinery_for_host(system, ip)
-  system.run_command("ssh-keygen -R #{ip}")
-  system.run_command("ssh-keyscan -H #{ip} >> ~/.ssh/known_hosts")
+  system.run_command("ssh-keygen -R #{ip}", fail_on_stderr_output: false)
+  system.run_command("ssh-keyscan -H #{ip} >> ~/.ssh/known_hosts", fail_on_stderr_output: false)
 end
 
 def prepare_remote_machinery_for_host(system, ip, opts)

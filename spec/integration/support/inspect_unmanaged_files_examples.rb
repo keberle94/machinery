@@ -40,7 +40,8 @@ shared_examples "inspect unmanaged files" do |base|
             "--scope=unmanaged-files --extract-files " \
             "--skip-files=#{ignore_list.join(",")}",
           as: "vagrant",
-          stdout: :capture
+          stdout: :capture,
+          stderr: :capture
         )
       end
 
@@ -61,7 +62,8 @@ shared_examples "inspect unmanaged files" do |base|
 Inspecting unmanaged-files...
  -> Found 0 files and trees...\r\033\[K -> Found 0 files and trees...\r\033\[K -> Extracted 0 unmanaged files and trees.
 EOF
-      expect(normalize_inspect_output(@machinery_output)).to include(expected)
+      expect(normalize_inspect_output(@machinery_output[0])).to include(expected)
+      expect(@machinery_output[1]).to include("contains invalid UTF-8 characters")
     end
 
     it "extracts meta data of unmanaged files" do
