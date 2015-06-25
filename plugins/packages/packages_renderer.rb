@@ -27,12 +27,22 @@ class PackagesRenderer < Renderer
   end
 
   def do_render_comparison(description1, description2, description_common)
-    @changed_packages = description1.packages.map(&:name) & description2.packages.map(&:name)
+    @changed_packages = if description1.packages && description2.packages
+      description1.packages.map(&:name) & description2.packages.map(&:name)
+    else
+      []
+    end
 
-    render_comparison_only_in(description1)
-    render_comparison_only_in(description2)
+    if description1.packages &&
+      !description1.packages.reject { |package| @changed_packages.include?(package.name) }.empty?
+      render_comparison_only_in(description1)
+    end
+    if description2.packages &&
+      !description2.packages.reject { |package| @changed_packages.include?(package.name) }.empty?
+      render_comparison_only_in(description2)
+    end
     render_comparison_changed(description1, description2)
-    render_comparison_common(description_common)
+    render_comparison_common(description_common) if @options[:show_all]
   end
 
   # In the comparison case we only want to show the package name, not all details like version,

@@ -398,7 +398,7 @@ EOT
 # Packages
 
 Only in 'one':
-  * kernel-3-1.x86_64 (openSUSE)
+  * kernel
 
 EOT
       output = CompareTask.new.render_comparison(system_description1,
@@ -457,11 +457,8 @@ EOT
       expected_output = <<EOT
 # Packages
 
-Only in 'one':
-  * kernel-3-1.x86_64 (openSUSE)
-
-Only in 'two':
-  * kernel-4-1.x86_64 (openSUSE)
+In both with different attributes ('one' <> 'two'):
+  * kernel (version: 3 <> 4)
 
 EOT
       output = CompareTask.new.render_comparison(system_description1,
