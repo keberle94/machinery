@@ -20,6 +20,10 @@
 # It defines methods for rendering data which will be called from the
 # specialized `do_render` methods in the subclasses.
 #
+# It also takes care of rendering comparisons between two system descriptions
+# via the `render_comparison` method. See the documentation for that method for
+# details on how to override the default comparison.
+#
 # The names of the subclasses are 1:1 mappings of the scope areas, e.g.
 # the PackagesRenderer class would be used for rendering when the user
 # specifies "--scope=packages".
@@ -73,6 +77,14 @@ class Renderer
     end
   end
 
+  def scope
+    # Return the un-camelcased name of the inspector,
+    # e.g. "foo_bar" for "FooBarInspector"
+    scope = self.class.name.match(/^(.*)Renderer$/)[1]
+    scope.gsub(/([^A-Z])([A-Z])/, "\\1_\\2").downcase
+  end
+
+  # Renders one system description using the specialized `do_render` method
   def render(system_description, options = {})
     @system_description = system_description
     @options = options
@@ -101,6 +113,24 @@ class Renderer
     @buffer
   end
 
+  # Renders the result of a comparison of two system descriptions. The arguments to that method
+  # are three SystemDescriptions:
+  #
+  # [description1] contains all elements that are only present in description1
+  # [description2] contains all elements that are only present in description2
+  # [description_common] contains all elements that are present in both descriptions
+  #
+  # The actual rendering is done using the `do_render_comparison` method. The default behaviour
+  # of that method is to
+  #
+  # * render description1 (the actual rendering happens in `do_render_only_in`)
+  # * render description2 (the actual rendering happens in `do_render_only_in`)
+  # * render description_common (the actual rendering happens in `do_render_common`)
+  #
+  # Both `do_render_only_in` and `do_render_common` fall back to the `do_render` method by default.
+  #
+  # When necessary the default behavior can be overridden by specializing either the outer
+  # `do_render_comparison` method and/or `do_render_only_in` and `do_render_common`.
   def render_comparison(description1, description2, description_common, options = {})
     @options = options
     @buffer = ""
@@ -224,13 +254,6 @@ class Renderer
       @buffer += "\n"
       @stack.pop
     end
-  end
-
-  def scope
-    # Return the un-camelcased name of the inspector,
-    # e.g. "foo_bar" for "FooBarInspector"
-    scope = self.class.name.match(/^(.*)Renderer$/)[1]
-    scope.gsub(/([^A-Z])([A-Z])/, "\\1_\\2").downcase
   end
 
   private
