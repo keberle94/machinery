@@ -150,7 +150,7 @@ describe PackagesRenderer do
       EOF
     }
 
-    it "shows two 'only in x' and on 'in both but different' sections" do
+    it "shows two 'only in x' and one 'in both but different' sections" do
       output = PackagesRenderer.new.render_comparison(
         description1, description2, SystemDescription.new("foo", nil)
       )
