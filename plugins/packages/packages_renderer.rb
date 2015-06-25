@@ -71,7 +71,13 @@ class PackagesRenderer < Renderer
           other_package = description2.packages.find { |p| package.name == p.name }
 
           changes = []
-          ["version", "vendor"].each do |attribute|
+          relevant_attributes = ["version", "vendor", "arch"]
+          if package.version == other_package.version
+            relevant_attributes << "release"
+            relevant_attributes << "checksum" if package.release == other_package.release
+          end
+
+          relevant_attributes.each do |attribute|
             if package[attribute] != other_package[attribute]
               changes << "#{attribute}: #{package[attribute]} <> #{other_package[attribute]}"
             end

@@ -88,6 +88,14 @@ describe PackagesRenderer do
               "arch": "x86_64",
               "vendor": "openSUSE",
               "checksum": "db96018161193aaa42ee8cd1234247f9"
+            },
+            {
+              "name": "cpio",
+              "version": "2.11",
+              "release": "26.182",
+              "arch": "x86_64",
+              "vendor": "SUSE LLC <https://www.suse.com/>",
+              "checksum": "091d486ab725d7542933b74f9b3204e4"
             }
           ]
         }
@@ -128,6 +136,14 @@ describe PackagesRenderer do
               "arch": "x86_64",
               "vendor": "Packman",
               "checksum": "db96018161193aaa42ee8cd1234247f9"
+            },
+            {
+              "name": "cpio",
+              "version": "2.11",
+              "release": "26.184",
+              "arch": "x86_64",
+              "vendor": "SUSE LLC <https://www.suse.com/>",
+              "checksum": "091d486ab725d7542933b74f9b3204e4"
             }
           ]
         }
@@ -152,6 +168,7 @@ In both with different attributes ('description1' <> 'description2'):
   * kernel-desktop (version: 3.7.10 <> 3.7.11)
   * autofs (vendor: openSUSE <> Packman)
   * btrfsprogs (version: 3.16 <> 3.18, vendor: openSUSE <> Packman)
+  * cpio (release: 26.182 <> 26.184)
 
 EOF
       expect(output).to eq(expected)
