@@ -33,22 +33,24 @@ class PackagesRenderer < Renderer
       []
     end
 
-    if description1.packages &&
-      !description1.packages.reject { |package| @changed_packages.include?(package.name) }.empty?
-      render_comparison_only_in(description1)
-    end
-    if description2.packages &&
-      !description2.packages.reject { |package| @changed_packages.include?(package.name) }.empty?
-      render_comparison_only_in(description2)
-    end
+    render_only_in(description1)
+    render_only_in(description2)
     render_comparison_changed(description1, description2)
     render_comparison_common(description_common) if @options[:show_all]
   end
 
+  def render_only_in(description)
+    return if !description.packages ||
+        description.packages.reject { |package| @changed_packages.include?(package.name) }.empty?
+
+    render_comparison_only_in(description)
+  end
   # In the comparison case we only want to show the package name, not all details like version,
   # architecture etc.
   def do_render_comparison_only_in
-    packages = @system_description.packages.reject { |package| @changed_packages.include?(package.name) }
+    packages = @system_description.packages.reject do |package|
+      @changed_packages.include?(package.name)
+    end
 
     list do
       packages.each do |p|
@@ -66,7 +68,7 @@ class PackagesRenderer < Renderer
     indent do
       list do
         packages.each do |package|
-          other_package = description2.packages.find { |p| package.name == p.name}
+          other_package = description2.packages.find { |p| package.name == p.name }
 
           changes = []
           ["version", "vendor"].each do |attribute|
