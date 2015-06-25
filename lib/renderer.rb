@@ -101,24 +101,32 @@ class Renderer
     @buffer
   end
 
-  def render_comparison_section(description)
+  def render_comparison_section(description, render_method)
     @system_description = description
-    indent { do_render }
+    indent { render_method.call }
     @buffer += "\n" unless @buffer.empty? || @buffer.end_with?("\n\n")
   end
 
   def render_comparison_only_in(description, scope)
     if description[scope]
       puts "Only in '#{description.name}':"
-      render_comparison_section(description)
+      render_comparison_section(description, method(:do_render_comparison_only_in))
     end
   end
 
   def render_comparison_common(description, scope)
     if description[scope]
       puts "Common to both systems:"
-      render_comparison_section(description)
+      render_comparison_section(description, method(:do_render_comparison_common))
     end
+  end
+
+  def do_render_comparison_only_in
+    do_render
+  end
+
+  def do_render_comparison_common
+    do_render
   end
 
   def render_comparison(description1, description2, description_common, options = {})

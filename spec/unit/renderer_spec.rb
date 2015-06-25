@@ -328,20 +328,20 @@ EOT
       end
     end
 
-    it "uses the #do_render method to do the actual rendering" do
-      expect(subject).to receive(:do_render) do
+    it "uses #do_render_comparison_only_in and #do_render_comparison_common for rendering" do
+      expect(subject).to receive(:do_render_comparison_only_in) do
         description = subject.instance_variable_get(:@system_description)
 
         expect(description).to eq(description1_with_data)
       end
 
-      expect(subject).to receive(:do_render) do
+      expect(subject).to receive(:do_render_comparison_only_in) do
         description = subject.instance_variable_get(:@system_description)
 
         expect(description).to eq(description2_with_data)
       end
 
-      expect(subject).to receive(:do_render) do
+      expect(subject).to receive(:do_render_comparison_common) do
         description = subject.instance_variable_get(:@system_description)
 
         expect(description).to eq(description_common_with_data)
@@ -370,6 +370,22 @@ EOT
         description_common_with_data,
         passed_options
       )
+    end
+  end
+
+  describe "#do_render_comparison_only_in" do
+    it "falls back to #do_render by default" do
+      expect(subject).to receive(:do_render)
+
+      subject.do_render_comparison_common
+    end
+  end
+
+  describe "#do_render_comparison_common" do
+    it "falls back to #do_render by default" do
+      expect(subject).to receive(:do_render)
+
+      subject.do_render_comparison_common
     end
   end
 end
