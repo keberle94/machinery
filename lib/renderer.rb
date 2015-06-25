@@ -101,34 +101,6 @@ class Renderer
     @buffer
   end
 
-  def render_comparison_section(description, render_method)
-    @system_description = description
-    indent { render_method.call }
-    @buffer += "\n" unless @buffer.empty? || @buffer.end_with?("\n\n")
-  end
-
-  def render_comparison_only_in(description, scope)
-    if description[scope]
-      puts "Only in '#{description.name}':"
-      render_comparison_section(description, method(:do_render_comparison_only_in))
-    end
-  end
-
-  def render_comparison_common(description, scope)
-    if description[scope]
-      puts "Common to both systems:"
-      render_comparison_section(description, method(:do_render_comparison_common))
-    end
-  end
-
-  def do_render_comparison_only_in
-    do_render
-  end
-
-  def do_render_comparison_common
-    do_render
-  end
-
   def render_comparison(description1, description2, description_common, options = {})
     @options = options
     @buffer = ""
@@ -143,11 +115,29 @@ class Renderer
 
     heading(display_name) if show_heading
 
-    render_comparison_only_in(description1, scope)
-    render_comparison_only_in(description2, scope)
-    render_comparison_common(description_common, scope) if options[:show_all]
+    do_render_comparison(description1, description2, description_common)
 
     @buffer
+  end
+
+  def render_comparison_section(description, render_method)
+    @system_description = description
+    indent { render_method.call }
+    @buffer += "\n" unless @buffer.empty? || @buffer.end_with?("\n\n")
+  end
+
+  def render_comparison_only_in(description)
+    if description[scope]
+      puts "Only in '#{description.name}':"
+      render_comparison_section(description, method(:do_render_comparison_only_in))
+    end
+  end
+
+  def render_comparison_common(description)
+    if description[scope]
+      puts "Common to both systems:"
+      render_comparison_section(description, method(:do_render_comparison_common))
+    end
   end
 
   def render_comparison_missing_scope(description1, description2)
@@ -170,6 +160,20 @@ class Renderer
     @buffer += "\n" unless @buffer.empty? || @buffer.end_with?("\n\n")
 
     @buffer
+  end
+
+  def do_render_comparison(description1, description2, description_common)
+    render_comparison_only_in(description1)
+    render_comparison_only_in(description2)
+    render_comparison_common(description_common) if @options[:show_all]
+  end
+
+  def do_render_comparison_only_in
+    do_render
+  end
+
+  def do_render_comparison_common
+    do_render
   end
 
   def heading(s)
