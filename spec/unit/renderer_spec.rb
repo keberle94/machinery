@@ -377,7 +377,7 @@ EOT
     it "falls back to #do_render by default" do
       expect(subject).to receive(:do_render)
 
-      subject.do_render_comparison_common
+      subject.do_render_comparison_only_in
     end
   end
 
