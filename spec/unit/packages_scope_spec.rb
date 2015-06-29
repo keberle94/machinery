@@ -65,10 +65,10 @@ describe PackagesScope do
       expect(@packages_scope1 == @packages_scope2).to be(true)
       expect(@packages_scope1.eql?(@packages_scope2)).to be(true)
 
-      only_in_scope1, only_in_scope2, changed, common = @packages_scope1.compare_with(@packages_scope2)
+     only_scope1, only_scope2, changed, common = @packages_scope1.compare_with(@packages_scope2)
 
-      expect(only_in_scope1).to be(nil)
-      expect(only_in_scope2).to be(nil)
+      expect(only_scope1).to be(nil)
+      expect(only_scope2).to be(nil)
       expect(changed).to be(nil)
 
       expect(common.size).to eq(3)
@@ -81,13 +81,13 @@ describe PackagesScope do
       expect(@packages_scope1 == @packages_scope3).to be(false)
       expect(@packages_scope1.eql?(@packages_scope3)).to be(false)
 
-      only_in_scope1, only_in_scope2, changed, common = @packages_scope1.compare_with(@packages_scope3)
+      only_scope1, only_scope2, changed, common = @packages_scope1.compare_with(@packages_scope3)
 
-      expect(only_in_scope1.size).to eq(1)
-      expect(only_in_scope1[0]).to eq(@package2)
+      expect(only_scope1.size).to eq(1)
+      expect(only_scope1[0]).to eq(@package2)
 
-      expect(only_in_scope2.size).to eq(1)
-      expect(only_in_scope2[0]).to eq(@package3)
+      expect(only_scope2.size).to eq(1)
+      expect(only_scope2[0]).to eq(@package3)
 
       expect(common.size).to eq(1)
       expect(common[0]).to eq(@package1)

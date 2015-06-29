@@ -176,7 +176,6 @@ describe "packages model" do
           )
         ]
       )
-
     end
 
     it "detects packages in both" do

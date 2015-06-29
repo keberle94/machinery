@@ -159,7 +159,9 @@ class Renderer
 
     render_comparison_only_in(description1)
     render_comparison_only_in(description2)
-    render_comparison_changed(description1.name, description2.name, changed_elements) if changed_elements
+    if changed_elements
+      render_comparison_changed(description1.name, description2.name, changed_elements)
+    end
     render_comparison_common(description_common) if @options[:show_all]
     @buffer
   end

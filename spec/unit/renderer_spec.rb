@@ -66,7 +66,6 @@ class BarBazRenderer < Renderer
 end
 
 describe Renderer do
-
   let(:description1_without_data) {
     create_test_description(json: "{}", name: "name1")
   }
@@ -204,7 +203,7 @@ EOF
     end
 
     it "removes :list elements from the structure stack" do
-      def renderer.content(description)
+      def renderer.content(_description)
         list("some list") do
           item("some item")
         end
@@ -215,7 +214,7 @@ EOF
     end
 
     it "raises an exception when a list is empty" do
-      def renderer.content(description)
+      def renderer.content(_description)
         list("some list")
       end
 
@@ -225,7 +224,7 @@ EOF
     end
 
     it "raises an exception when an item is created outside a list" do
-      def renderer.content(description)
+      def renderer.content(_description)
         item("some item")
       end
 
@@ -235,7 +234,7 @@ EOF
     end
 
     it "renders a scope of a system description with a date and a hostname" do
-      def renderer.content(description)
+      def renderer.content(_description)
       end
 
       expected = <<EOF
@@ -246,7 +245,7 @@ EOF
     end
 
     it "indents string with newlines properly" do
-      def renderer.content(description)
+      def renderer.content(_description)
         puts "line 1\nline 2"
       end
 
