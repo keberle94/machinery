@@ -16,80 +16,48 @@
 # you may find current contact information at www.suse.com
 
 class PackagesRenderer < Renderer
-  def do_render
-    return unless @system_description.packages
+  def display_name
+    "Packages"
+  end
+
+  def content(description)
+    return unless description.packages
 
     list do
-      @system_description.packages.each do |p|
+      description.packages.each do |p|
         item "#{p.name}-#{p.version}-#{p.release}.#{p.arch} (#{p.vendor})"
       end
     end
   end
 
-  def do_render_comparison(description1, description2, description_common)
-    @changed_packages = if description1.packages && description2.packages
-      description1.packages.map(&:name) & description2.packages.map(&:name)
-    else
-      []
-    end
-
-    render_only_in(description1)
-    render_only_in(description2)
-    render_comparison_changed(description1, description2)
-    render_comparison_common(description_common) if @options[:show_all]
-  end
-
-  def render_only_in(description)
-    return if !description.packages ||
-        description.packages.reject { |package| @changed_packages.include?(package.name) }.empty?
-
-    render_comparison_only_in(description)
-  end
   # In the comparison case we only want to show the package name, not all details like version,
   # architecture etc.
-  def do_render_comparison_only_in
-    packages = @system_description.packages.reject do |package|
-      @changed_packages.include?(package.name)
-    end
-
+  def compare_content_only_in(description)
     list do
-      packages.each do |p|
+      description.packages.each do |p|
         item "#{p.name}"
       end
     end
   end
 
-  def render_comparison_changed(description1, description2)
-    return if @changed_packages.empty?
-
-    packages = description1.packages.select { |package| @changed_packages.include?(package.name) }
-
-    puts "In both with different attributes ('#{description1.name}' <> '#{description2.name}'):"
-    indent do
-      list do
-        packages.each do |package|
-          other_package = description2.packages.find { |p| package.name == p.name }
-
-          changes = []
-          relevant_attributes = ["version", "vendor", "arch"]
-          if package.version == other_package.version
-            relevant_attributes << "release"
-            relevant_attributes << "checksum" if package.release == other_package.release
-          end
-
-          relevant_attributes.each do |attribute|
-            if package[attribute] != other_package[attribute]
-              changes << "#{attribute}: #{package[attribute]} <> #{other_package[attribute]}"
-            end
-          end
-
-          item "#{package.name} (#{changes.join(", ")})"
+  def compare_content_changed(changed_elements)
+    list do
+      changed_elements.each do |one, two|
+        changes = []
+        relevant_attributes = ["version", "vendor", "arch"]
+        if one.version == two.version
+          relevant_attributes << "release"
+          relevant_attributes << "checksum" if one.release == two.release
         end
+
+        relevant_attributes.each do |attribute|
+          if one[attribute] != two[attribute]
+            changes << "#{attribute}: #{one[attribute]} <> #{two[attribute]}"
+          end
+        end
+
+        item "#{one.name} (#{changes.join(", ")})"
       end
     end
-  end
-
-  def display_name
-    "Packages"
   end
 end

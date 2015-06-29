@@ -18,11 +18,22 @@
 # Renderer is the base class for all text renderer plugins
 #
 # It defines methods for rendering data which will be called from the
-# specialized `do_render` methods in the subclasses.
+# specialized content methods in the subclasses.
 #
-# It also takes care of rendering comparisons between two system descriptions
-# via the `render_comparison` method. See the documentation for that method for
-# details on how to override the default comparison.
+# Subclasses can define the output for the `show` and `compare` commands using
+# the following `content` methods:
+#
+# For `machinery show`:
+# [content] (required) Defines the output for a scope in `machinery show`
+#
+# For `machinery compare`:
+# [compare_content_only_in] Defines the output of the "only in x" sections. The
+#                           default behavior is to fall back to `content`.
+# [compare_content_common]  Defines the output of the "in both" section. The
+#                           default behavior is to fall back to `content`.
+# [compare_content_changed] Defines the output of the "in both with changed
+#                           attributes" section for scopes where this is
+#                           supported.
 #
 # The names of the subclasses are 1:1 mappings of the scope areas, e.g.
 # the PackagesRenderer class would be used for rendering when the user
@@ -38,11 +49,11 @@
 # Accordingly a simple renderer for the "packages" scope could look like this:
 #
 # class PackagesRenderer < Renderer
-#   def do_render
-#     return if @system_description.packages.empty?
+#   def content(description)
+#     return if description.packages.empty?
 #
 #     list "Packages" do
-#       @system_description.packages.each do |p|
+#       description.packages.each do |p|
 #         item "#{p.name} (#{p.version})"
 #       end
 #     end
@@ -55,7 +66,8 @@ class Renderer
   attr_accessor :system_description
   attr_accessor :buffer
 
-  abstract_method :do_render
+  abstract_method :content
+  abstract_method :compare_content_changed
 
   @@renderers = []
 
@@ -84,9 +96,8 @@ class Renderer
     scope.gsub(/([^A-Z])([A-Z])/, "\\1_\\2").downcase
   end
 
-  # Renders one system description using the specialized `do_render` method
+  # Renders one system description using the specialized `content` method
   def render(system_description, options = {})
-    @system_description = system_description
     @options = options
     @buffer = ""
     @indent = 2
@@ -106,7 +117,7 @@ class Renderer
       heading(header)
     end
 
-    do_render
+    content(system_description)
 
     @buffer += "\n" unless @buffer.empty? || @buffer.end_with?("\n\n")
 
@@ -120,54 +131,67 @@ class Renderer
   # [description2] contains all elements that are only present in description2
   # [description_common] contains all elements that are present in both descriptions
   #
-  # The actual rendering is done using the `do_render_comparison` method. The default behaviour
+  # The actual rendering is done using the `content_comparison` method. The default behaviour
   # of that method is to
   #
-  # * render description1 (the actual rendering happens in `do_render_only_in`)
-  # * render description2 (the actual rendering happens in `do_render_only_in`)
-  # * render description_common (the actual rendering happens in `do_render_common`)
+  # * render description1 (the actual rendering happens in `content_only_in`)
+  # * render description2 (the actual rendering happens in `content_only_in`)
+  # * render description_common (the actual rendering happens in `content_common`)
   #
-  # Both `do_render_only_in` and `do_render_common` fall back to the `do_render` method by default.
+  # Both `content_only_in` and `content_common` fall back to the `content` method by default.
   #
   # When necessary the default behavior can be overridden by specializing either the outer
-  # `do_render_comparison` method and/or `do_render_only_in` and `do_render_common`.
-  def render_comparison(description1, description2, description_common, options = {})
+  # `content_comparison` method and/or `content_only_in` and `content_common`.
+  def render_comparison(description1, description2, changed_elements, description_common,
+      options = {})
     @options = options
     @buffer = ""
     @indent = 0
     @stack = []
 
     show_heading = if options[:show_all]
-      description1[scope] || description2[scope] || description_common[scope]
+      description1[scope] || description2[scope] || changed_elements || description_common[scope]
     else
-      description1[scope] || description2[scope]
+      description1[scope] || description2[scope] || changed_elements
     end
 
     heading(display_name) if show_heading
 
-    do_render_comparison(description1, description2, description_common)
-
+    render_comparison_only_in(description1)
+    render_comparison_only_in(description2)
+    render_comparison_changed(description1.name, description2.name, changed_elements) if changed_elements
+    render_comparison_common(description_common) if @options[:show_all]
     @buffer
   end
 
-  def render_comparison_section(description, render_method)
-    @system_description = description
-    indent { render_method.call }
+  def render_comparison_only_in(description)
+    return if !description[scope]
+
+    puts "Only in '#{description.name}':"
+    indent { compare_content_only_in(description) }
     @buffer += "\n" unless @buffer.empty? || @buffer.end_with?("\n\n")
   end
 
-  def render_comparison_only_in(description)
-    if description[scope]
-      puts "Only in '#{description.name}':"
-      render_comparison_section(description, method(:do_render_comparison_only_in))
-    end
+  def render_comparison_changed(name1, name2, changed_elements)
+    puts "In both with different attributes ('#{name1}' <> '#{name2}'):"
+    indent { compare_content_changed(changed_elements) }
+    @buffer += "\n" unless @buffer.empty? || @buffer.end_with?("\n\n")
   end
 
   def render_comparison_common(description)
-    if description[scope]
-      puts "Common to both systems:"
-      render_comparison_section(description, method(:do_render_comparison_common))
-    end
+    return if !description[scope]
+
+    puts "Common to both systems:"
+    indent { compare_content_common(description) }
+    @buffer += "\n" unless @buffer.empty? || @buffer.end_with?("\n\n")
+  end
+
+  def compare_content_only_in(description)
+    content(description)
+  end
+
+  def compare_content_common(description)
+    content(description)
   end
 
   def render_comparison_missing_scope(description1, description2)
@@ -192,19 +216,7 @@ class Renderer
     @buffer
   end
 
-  def do_render_comparison(description1, description2, description_common)
-    render_comparison_only_in(description1)
-    render_comparison_only_in(description2)
-    render_comparison_common(description_common) if @options[:show_all]
-  end
-
-  def do_render_comparison_only_in
-    do_render
-  end
-
-  def do_render_comparison_common
-    do_render
-  end
+  protected
 
   def heading(s)
     @buffer += "# #{s}\n\n"
