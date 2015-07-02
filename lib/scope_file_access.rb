@@ -78,7 +78,7 @@ module ScopeFileAccessArchive
     else
       begin
         tar_file = File.join(scope_file_store.path, "files.tgz")
-        Cheetah.run("tar", "xfO", tar_file, filename.gsub(/^\//,''), :stdout => :capture)
+        Cheetah.run("tar", "xfO", tar_file, filename.gsub(/^\//, ""), stdout: :capture)
       rescue
         retrieve_file_content_recursively(filename, filename)
       end
@@ -91,7 +91,7 @@ module ScopeFileAccessArchive
     tar_file = File.join(scope_file_store.path, "trees", last_path) + ".tgz"
     if File.exist?(tar_file)
       Machinery.logger.info "reading tar_file #{tar_file}"
-      return Cheetah.run("tar", "xfO", tar_file, path.gsub(/^\//,''), :stdout => :capture)
+      return Cheetah.run("tar", "xfO", tar_file, path.gsub(/^\//, ""), stdout: :capture)
     else
       # Recursively go through parent directories
       # File.dirname removes the last sub directory from the path
