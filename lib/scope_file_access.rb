@@ -16,6 +16,13 @@ module ScopeFileAccessFlat
 
     File.join(scope_file_store.path, system_file.name)
   end
+
+  def retrieve_file_content(filename)
+    path = File.join(scope_file_store.path, filename)
+    raise Machinery::Errors::FileUtilsError if !File.exist?(path)
+    file = File.new(path, "r")
+    file.read
+  end
 end
 
 module ScopeFileAccessArchive
@@ -62,6 +69,33 @@ module ScopeFileAccessArchive
       )
     else
       File.join(system_file.scope.scope_file_store.path, "files.tgz")
+    end
+  end
+
+  def retrieve_file_content(filename)
+    if File.exist?(File.join(scope_file_store.path, filename))
+      return "is here"
+    else
+      begin
+        tar_file = File.join(scope_file_store.path, "files.tgz")
+        Cheetah.run("tar", "xfO", tar_file, filename.gsub(/^\//,''), :stdout => :capture)
+      rescue
+        retrieve_file_content_recursively(filename, filename)
+      end
+    end
+  end
+
+  def retrieve_file_content_recursively(path, last_path)
+    raise Machinery::Errors::FileUtilsError if last_path == "/"
+
+    tar_file = File.join(scope_file_store.path, "trees", last_path) + ".tgz"
+    if File.exist?(tar_file)
+      Machinery.logger.info "reading tar_file #{tar_file}"
+      return Cheetah.run("tar", "xfO", tar_file, path.gsub(/^\//,''), :stdout => :capture)
+    else
+      # Recursively go through parent directories
+      # File.dirname removes the last sub directory from the path
+      return retrieve_file_content_recursively(path, File.dirname(last_path))
     end
   end
 end

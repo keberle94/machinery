@@ -48,6 +48,23 @@ describe "ScopeFileAccess" do
     end
   end
 
+  describe "retrieve_file_content" do
+    let(:description) {
+       SystemDescription.load!("opensuse131-build", SystemDescriptionStore.new("spec/data/descriptions"))
+     }
+
+    it "returns the file content of a file stored in a directory" do
+      file_content = description.config_files.retrieve_file_content("/etc/crontab")
+      expect(file_content).to eq("-*/15 * * * *   root  echo config_files_integration_test\n")
+    end
+
+    it "raises an error if file is not found" do
+      expect {
+        description.changed_managed_files.retrieve_file_content("/does/not/exists")
+      }.to raise_error(Machinery::Errors::FileUtilsError)
+    end
+  end
+
   describe ScopeFileAccessArchive do
     let(:description) {
       create_test_description(
@@ -77,6 +94,32 @@ describe "ScopeFileAccess" do
         subject.retrieve_trees_from_system_as_archive(system, ["/opt", "/foo/bar"], ["/exclude"])
         expect(File.exists?(File.join(scope_file_store.path, "trees", "opt.tgz"))).to be(true)
         expect(File.exists?(File.join(scope_file_store.path, "trees", "foo/bar.tgz"))).to be(true)
+      end
+    end
+
+    describe "retrieve_file_content" do
+       let(:description) {
+         SystemDescription.load!("opensuse131-build", SystemDescriptionStore.new("spec/data/descriptions"))
+       }
+
+      it "returns the file content of a file stored in a tar ball in a sub directory" do
+        file_content = description.unmanaged_files.
+          retrieve_file_content("/usr/local/magicapp/weird-filenames/tränenüberströmt.txt")
+
+        expect(file_content).to eq("This is a file with umlauts in its name.\n")
+      end
+
+      it "returns the file content of a file stored in the files.tgz tar ball" do
+        file_content = description.unmanaged_files.retrieve_file_content("/etc/magicapp.conf")
+
+        expect(file_content).to eq("This is magicapp.conf\n")
+      end
+
+
+      it "raises an error if file is not found" do
+        expect {
+          description.unmanaged_files.retrieve_file_content("/does/not/exists")
+        }.to raise_error(Machinery::Errors::FileUtilsError)
       end
     end
 
