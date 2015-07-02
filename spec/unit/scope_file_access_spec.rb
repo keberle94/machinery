@@ -50,7 +50,8 @@ describe "ScopeFileAccess" do
 
   describe "retrieve_file_content" do
     let(:description) {
-       SystemDescription.load!("opensuse131-build", SystemDescriptionStore.new("spec/data/descriptions"))
+       SystemDescription.load!("opensuse131-build",
+                               SystemDescriptionStore.new("spec/data/descriptions"))
     }
 
     it "returns the file content of a file stored in a directory" do
@@ -103,23 +104,22 @@ describe "ScopeFileAccess" do
                                 SystemDescriptionStore.new("spec/data/descriptions"))
       }
 
-     it "returns the file content of a file stored in a tar ball in a sub directory" do
-       file_content = description.unmanaged_files.
-         retrieve_file_content("/usr/local/magicapp/weird-filenames/tränenüberströmt.txt")
+      it "returns the file content of a file stored in a tar ball in a sub directory" do
+        file_content = description.unmanaged_files.
+          retrieve_file_content("/usr/local/magicapp/weird-filenames/tränenüberströmt.txt")
 
-       expect(file_content).to eq("This is a file with umlauts in its name.\n")
-     end
+        expect(file_content).to eq("This is a file with umlauts in its name.\n")
+      end
 
-     it "returns the file content of a file stored in the files.tgz tar ball" do
-       file_content = description.unmanaged_files.retrieve_file_content("/etc/magicapp.conf")
+      it "returns the file content of a file stored in the files.tgz tar ball" do
+        file_content = description.unmanaged_files.retrieve_file_content("/etc/magicapp.conf")
 
-       expect(file_content).to eq("This is magicapp.conf\n")
-    end
+        expect(file_content).to eq("This is magicapp.conf\n")
+      end
 
-
-    it "raises an error if file is not found" do
-      expect {
-         description.unmanaged_files.retrieve_file_content("/does/not/exists")
+      it "raises an error if file is not found" do
+        expect {
+          description.unmanaged_files.retrieve_file_content("/does/not/exists")
         }.to raise_error(Machinery::Errors::FileUtilsError)
       end
     end
