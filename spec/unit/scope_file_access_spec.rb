@@ -73,6 +73,28 @@ describe "ScopeFileAccess" do
         )
       end
     end
+
+    describe "#binary?" do
+      let(:description) {
+        SystemDescription.load!("changed-managed-files-good",
+          SystemDescriptionStore.new("spec/data/descriptions/validation"))
+      }
+
+      it "returns false if a file is a text file" do
+        is_binary = description.changed_managed_files.binary?("/lib/mkinitrd/scripts/setup-done.sh")
+        expect(is_binary).to be(false)
+      end
+
+      it "returns true if a file is a binary file" do
+        is_binary = description.changed_managed_files.binary?("/lib/libc-2.19.so")
+        expect(is_binary).to be(true)
+      end
+
+      it "returns false if the file is empty" do
+        is_binary = description.changed_managed_files.binary?("/lib/mkinitrd/scripts/empty.sh")
+        expect(is_binary).to be(false)
+      end
+    end
   end
 
   describe ScopeFileAccessArchive do
@@ -142,6 +164,28 @@ describe "ScopeFileAccess" do
 
         expect(File.exists?(File.join(target, "files.tgz"))).to be(true)
         expect(File.exists?(File.join(target, "trees/etc/tarball with spaces.tgz"))).to be(true)
+      end
+    end
+
+    describe "#binary?" do
+      let(:description) {
+        SystemDescription.load!("unmanaged-files-good",
+          SystemDescriptionStore.new("spec/data/descriptions/validation"))
+      }
+
+      it "returns false if a file is a text file" do
+        is_binary = description.unmanaged_files.binary?("/etc/grub.conf")
+        expect(is_binary).to be(false)
+      end
+
+      it "returns true if a file is a binary file" do
+        is_binary = description.unmanaged_files.binary?("/var/lib/misc/random-seed")
+        expect(is_binary).to be(true)
+      end
+
+      it "returns false if the file is empty" do
+        is_binary = description.unmanaged_files.binary?("/root/.bash_history")
+        expect(is_binary).to be(false)
       end
     end
   end

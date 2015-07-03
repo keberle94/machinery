@@ -30,6 +30,16 @@ module ScopeFileAccessFlat
 
     File.read(path)
   end
+
+  def binary?(filename)
+    path = File.join(scope_file_store.path, filename)
+    if !File.exist?(path)
+      raise Machinery::Errors::FileUtilsError, "The requested file '#{filename}' was not found."
+    end
+
+    output = Cheetah.run("file", path, stdout: :capture)
+    !output.include?("ASCII") && !output.include?("empty")
+  end
 end
 
 module ScopeFileAccessArchive
@@ -91,5 +101,10 @@ module ScopeFileAccessArchive
     rescue
       raise Machinery::Errors::FileUtilsError, "The requested file '#{filename}' was not found."
     end
+  end
+
+  def binary?(filename)
+    output = Cheetah.run("file", "-", stdin: file_content(filename), stdout: :capture)
+    !output.include?("ASCII") && !output.include?("no read permission")
   end
 end
