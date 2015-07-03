@@ -17,18 +17,18 @@ module ScopeFileAccessFlat
     File.join(scope_file_store.path, system_file.name)
   end
 
-  def file_content(filename)
+  def file_content(system_file)
     if !extracted
       raise Machinery::Errors::FileUtilsError, "The requested file '#{filename}' is not available" \
         " because files for scope '#{scope_name}' were not extracted."
     end
 
-    path = File.join(scope_file_store.path, filename)
-    if !File.exist?(path)
-      raise Machinery::Errors::FileUtilsError, "The requested file '#{filename}' was not found."
-    end
+    File.read(system_file.scope.file_path(system_file))
+  end
 
-    File.read(path)
+  def binary?(system_file)
+    output = Cheetah.run("file", system_file.scope.file_path(system_file), stdout: :capture)
+    !output.include?("ASCII") && !output.include?("empty")
   end
 end
 
@@ -79,17 +79,22 @@ module ScopeFileAccessArchive
     end
   end
 
-  def file_content(filename)
+  def file_content(system_file)
     if !extracted
-      raise Machinery::Errors::FileUtilsError, "The requested file '#{filename}' is not available" \
+      raise Machinery::Errors::FileUtilsError, "The requested file '#{system_file.name}' is not available" \
         " because files for scope '#{scope_name}' were not extracted."
     end
 
     tarball_path = File.join(scope_file_store.path, "files.tgz")
     begin
-      Cheetah.run("tar", "xfO", tarball_path, filename.gsub(/^\//, ""), stdout: :capture)
+      Cheetah.run("tar", "xfO", tarball_path, system_file.name.gsub(/^\//, ""), stdout: :capture)
     rescue
-      raise Machinery::Errors::FileUtilsError, "The requested file '#{filename}' was not found."
+      raise Machinery::Errors::FileUtilsError, "The requested file '#{system_file.name}' was not found."
     end
+  end
+
+  def binary?(system_file)
+    output = Cheetah.run("file", "-", stdin: file_content(system_file), stdout: :capture)
+    !output.include?("ASCII") && !output.include?("no read permission")
   end
 end
