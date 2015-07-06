@@ -81,17 +81,29 @@ describe "ScopeFileAccess" do
       }
 
       it "returns false if a file is a text file" do
-        is_binary = description.changed_managed_files.binary?("/lib/mkinitrd/scripts/setup-done.sh")
+        system_file = description.changed_managed_files.files.find do |file|
+          file.name == "/lib/mkinitrd/scripts/setup-done.sh"
+        end
+
+        is_binary = description.changed_managed_files.binary?(system_file)
         expect(is_binary).to be(false)
       end
 
       it "returns true if a file is a binary file" do
-        is_binary = description.changed_managed_files.binary?("/lib/libc-2.19.so")
+        system_file = description.changed_managed_files.files.find do |file|
+          file.name == "/lib/libc-2.19.so"
+        end
+
+        is_binary = description.changed_managed_files.binary?(system_file)
         expect(is_binary).to be(true)
       end
 
       it "returns false if the file is empty" do
-        is_binary = description.changed_managed_files.binary?("/lib/mkinitrd/scripts/empty.sh")
+        system_file = description.changed_managed_files.files.find do |file|
+          file.name == "/lib/mkinitrd/scripts/empty.sh"
+        end
+
+        is_binary = description.changed_managed_files.binary?(system_file)
         expect(is_binary).to be(false)
       end
     end
@@ -174,17 +186,29 @@ describe "ScopeFileAccess" do
       }
 
       it "returns false if a file is a text file" do
-        is_binary = description.unmanaged_files.binary?("/etc/grub.conf")
+        system_file = description.unmanaged_files.files.find do |file|
+          file.name == "/etc/grub.conf"
+        end
+
+        is_binary = description.unmanaged_files.binary?(system_file)
         expect(is_binary).to be(false)
       end
 
       it "returns true if a file is a binary file" do
-        is_binary = description.unmanaged_files.binary?("/var/lib/misc/random-seed")
+        system_file = description.unmanaged_files.files.find do |file|
+          file.name == "/var/lib/misc/random-seed"
+        end
+
+        is_binary = description.unmanaged_files.binary?(system_file)
         expect(is_binary).to be(true)
       end
 
       it "returns false if the file is empty" do
-        is_binary = description.unmanaged_files.binary?("/root/.bash_history")
+        system_file = description.unmanaged_files.files.find do |file|
+          file.name == "/root/.bash_history"
+        end
+
+        is_binary = description.unmanaged_files.binary?(system_file)
         expect(is_binary).to be(false)
       end
     end
