@@ -28,8 +28,11 @@ module ScopeFileAccessFlat
   end
 
   def binary?(system_file)
-    output = Cheetah.run("file", system_file.scope.file_path(system_file), stdout: :capture)
-    !output.include?("ASCII") && !output.include?("empty")
+    path = system_file.scope.file_path(system_file)
+    return false if File.stat(path).size == 0
+
+    output = Cheetah.run("file", path, stdout: :capture)
+    !output.include?("ASCII")
   end
 end
 
@@ -96,9 +99,10 @@ module ScopeFileAccessArchive
   end
 
   def binary?(system_file)
-    output = Cheetah.run("file", "-", stdin: file_content(system_file), stdout: :capture)
+    content = file_content(system_file)
+    return false if content.empty?
 
-    # For empty files nothing is passed, which makes `file` think it had no read permission
-    !output.include?("ASCII") && !output.include?("no read permission")
+    output = Cheetah.run("file", "-", stdin: content, stdout: :capture)
+    !output.include?("ASCII")
   end
 end
