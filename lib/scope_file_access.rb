@@ -18,7 +18,6 @@ module ScopeFileAccessFlat
   end
 
   def file_content(system_file)
-    puts extracted
     if !extracted
       raise Machinery::Errors::FileUtilsError, "The requested file '#{system_file.name}' is" \
         " not available because files for scope '#{scope_name}' were not extracted."
