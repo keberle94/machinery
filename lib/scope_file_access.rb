@@ -29,7 +29,7 @@ module ScopeFileAccessFlat
 
   def binary?(system_file)
     path = system_file.scope.file_path(system_file)
-    return false if File.stat(path).size == 0
+    return false if File.zero?(path)
 
     output = Cheetah.run("file", path, stdout: :capture)
     !output.include?("ASCII")
