@@ -63,9 +63,13 @@ describe "ScopeFileAccess" do
       end
 
       it "raises an error if the files were not extracted" do
-        description = create_test_description(scopes: ["changed_managed_files"])
+        description["changed_managed_files"].extracted = false
+        system_file = description.config_files.files.find do |file|
+          file.name == "/etc/crontab"
+        end
+
         expect {
-          description.changed_managed_files.file_content("/etc/crontab")
+          description.changed_managed_files.file_content(system_file)
         }.to raise_error(
           Machinery::Errors::FileUtilsError, /for scope 'changed_managed_files' were not extracted/
         )

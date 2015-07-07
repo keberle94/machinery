@@ -18,12 +18,13 @@ module ScopeFileAccessFlat
   end
 
   def file_content(system_file)
+    puts extracted
     if !extracted
-      raise Machinery::Errors::FileUtilsError, "The requested file '#{filename}' is not available" \
+      raise Machinery::Errors::FileUtilsError, "The requested file '#{system_file.name}' is not available" \
         " because files for scope '#{scope_name}' were not extracted."
     end
 
-    File.read(system_file.scope.file_path(system_file))
+    File.read(file_path(system_file))
   end
 
   def binary?(system_file)
@@ -96,6 +97,8 @@ module ScopeFileAccessArchive
 
   def binary?(system_file)
     output = Cheetah.run("file", "-", stdin: file_content(system_file), stdout: :capture)
+
+    # For empty files nothing is passed, which makes `file` think it had no read permission
     !output.include?("ASCII") && !output.include?("no read permission")
   end
 end
