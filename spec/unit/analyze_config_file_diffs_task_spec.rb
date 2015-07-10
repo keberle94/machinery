@@ -216,4 +216,17 @@ describe AnalyzeConfigFileDiffsTask do
       )
     end
   end
+
+  describe "#check_for_zypper_version" do
+    it "raises an error if zypper version is outdated and OS is 13.1" do
+      allow(Cheetah).to receive(:run).with(
+        "zypper", "--version", stdout: :capture
+      git ).and_return("zypper 1.8.12\n").at_least(:once)
+      allow_any_instance_of(Zypper).to receive(:download_package)
+      expect(LocalSystem).to receive(:os).and_return({"name" => "openSUSE 13.1 (Bottle)"})
+
+      expect{ subject.check_for_zypper_version }.to raise_error(Machinery::Errors::AnalysisFailed)
+      LocalSystem.class_variable_set("@@os", nil) # LocalSystem.os is cached
+    end
+  end
 end
