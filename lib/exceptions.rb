@@ -133,5 +133,7 @@ module Machinery
     class ZypperFailed < MachineryError; end
     class UnknownConfig < MachineryError; end
     class UnsupportedArchitecture < MachineryError; end
+    class InjectFileFailed < MachineryError; end
+    class RemoveFileFailed < MachineryError; end
   end
 end

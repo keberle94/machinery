@@ -93,6 +93,22 @@ describe LocalSystem do
     end
   end
 
+  describe "#inject_file" do
+    it "copies a file to the local system" do
+      @existing_file = given_dummy_file
+      expect(FileUtils).to receive(:copy)
+      local_system.inject_file(@existing_file, "/tmp")
+    end
+  end
+
+  describe "#remove_file" do
+    it "removed a file from the local system" do
+      @existing_file = given_dummy_file
+      expect(File).to receive(:delete)
+      local_system.remove_file("/tmp/foo")
+    end
+  end
+
   describe ".validate_machinery_compatibility" do
     context "on hosts that can run machinery" do
       it "shows no warning" do

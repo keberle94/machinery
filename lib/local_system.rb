@@ -124,4 +124,24 @@ EOF
     # File not found, return nil
     return
   end
+
+  # Copies a file to the local system
+  def inject_file(source, destination_dir)
+    FileUtils.copy(source, destination_dir)
+  rescue
+    raise Machinery::Errors::InjectFileFailed.new(
+      "Could not inject file '#{source}' to local system.\n" \
+      "Error: #{e}"
+    )
+  end
+
+  # Removes a file from the System
+  def remove_file(file)
+    File.delete(file)
+  rescue => e
+    raise Machinery::Errors::RemoveFileFailed.new(
+      "Could not remove file '#{file}' on local system'.\n" \
+      "Error: #{e}"
+    )
+  end
 end

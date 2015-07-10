@@ -202,8 +202,33 @@ class UnmanagedFilesInspector < Inspector
     @description = description
   end
 
+  def determine_inspector(options = {})
+    if !binary_inspector_exist?
+      Machinery::Ui.puts(
+        "Note: Using traditional inspection because there is no helper binary for" \
+        " architecture '#{@system.arch}' available."
+      )
+    elsif options && options[:extract_unmanaged_files]
+      Machinery::Ui.puts(
+        "Note: Using traditional inspection because file extraction is not" \
+        " supported by the helper binary."
+      )
+    elsif options && options[:remote_user] && options[:remote_user] != "root"
+      Machinery::Ui.puts(
+        "Note: Using traditional inspection because only 'root' is supported as remote user."
+      )
+    else
+      Machinery::Ui.puts "Note: Using helper binary for inspection of unmanaged files."
+      return "binary"
+    end
+    "traditional"
+  end
+
   def inspect(filter, options = {})
     do_extract = options && options[:extract_unmanaged_files]
+
+    return inspect_using_helper if determine_inspector(options) == "binary"
+
     check_requirements(do_extract)
 
     scope = UnmanagedFilesScope.new
@@ -385,6 +410,16 @@ class UnmanagedFilesInspector < Inspector
       "#{@description.unmanaged_files.files.count} unmanaged files and trees."
   end
 
+  def inspect_using_helper
+    system.inject_file(
+      File.join("/usr/share/machinery/helpers", @system.arch, "machinery_helper"), "/tmp"
+    )
+    scope = system.run_command("/tmp/machinery_helper", stdout: :capture)
+    system.remove_file("/tmp/machinery_helper")
+
+    @description["unmanaged_files"] = JSON.parse(scope)
+  end
+
   private
 
   def show_extraction_progress(count)
@@ -400,5 +435,9 @@ class UnmanagedFilesInspector < Inspector
       ["awk", "{print $NF}"],
       stdout: :capture
     ).split
+  end
+
+  def binary_inspector_exist?
+    File.executable?(File.join("/usr/share/machinery/helpers", @system.arch, "machinery_helper"))
   end
 end

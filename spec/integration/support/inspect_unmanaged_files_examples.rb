@@ -61,11 +61,14 @@ shared_examples "inspect unmanaged files" do |base|
       expected = expected_output.split("\n").select { |i| i.start_with?("  * ") }
       expect(actual).to match_array(expected)
 
-      expected = <<EOF
-Inspecting unmanaged-files...
- -> Found 0 files and trees...\r\033\[K -> Found 0 files and trees...\r\033\[K -> Extracted 0 unmanaged files and trees.
-EOF
-      expect(normalize_inspect_output(inspect_command.stdout)).to include(expected)
+      expected_header = "Inspecting unmanaged-files...\nNote: Using traditional inspection"
+      expected_result = " -> Found 0 files and trees...\r\033\[K -> Found 0 files and trees..." \
+        "\r\033\[K -> Extracted 0 unmanaged files and trees."
+
+      normalized_output = normalize_inspect_output(inspect_command.stdout)
+
+      expect(normalized_output).to include(expected_result)
+      expect(normalized_output).to include(expected_header)
     end
 
     it "extracts meta data of unmanaged files" do

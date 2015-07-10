@@ -100,7 +100,9 @@ describe UnmanagedFilesInspector do
     }
 
     before(:each) do
+      expect(subject).to receive(:binary_inspector_exist?).and_return(false)
       allow(JsonValidator).to receive(:new).and_return(double(validate: []))
+      allow(system).to receive(:arch).and_return("x86_64")
       FakeFS::FileSystem.clone(test_file_path,test_file_path)
       FakeFS::FileSystem.clone("helpers/")
       description.save
@@ -444,6 +446,58 @@ describe UnmanagedFilesInspector do
         ]
       ])
       expect(captured_machinery_output).to match(/broken\uFFFDLink.*broken\uFFFDtarget/)
+    end
+  end
+
+  describe "determine_inspector" do
+    before(:each) do
+      allow(system).to receive(:arch).and_return("x86_64")
+    end
+
+    context "when binary is missing" do
+      it "returns 'traditional'" do
+        expect(subject).to receive(:binary_inspector_exist?).and_return(false)
+        expect(Machinery::Ui).to receive(:puts).with(
+          /traditional inspection.*no helper binary.*architecture 'x86_64'/
+        )
+        expect(subject.determine_inspector).to eq("traditional")
+      end
+    end
+
+    context "when the user wants to extract files" do
+      it "returns 'traditional'" do
+        expect(subject).to receive(:binary_inspector_exist?).and_return(true)
+        options = { extract_unmanaged_files: true }
+        expect(Machinery::Ui).to receive(:puts).with(/traditional inspection.*file extraction/)
+        expect(subject.determine_inspector(options)).to eq("traditional")
+      end
+    end
+
+    context "when the remote user is other than root" do
+      it "returns 'traditional'" do
+        expect(subject).to receive(:binary_inspector_exist?).and_return(true)
+        options = { remote_user: "alfred" }
+        expect(Machinery::Ui).to receive(:puts).with(/traditional inspection.*remote user/)
+        expect(subject.determine_inspector(options)).to eq("traditional")
+      end
+    end
+
+    it "returns 'binary'" do
+      expect(subject).to receive(:binary_inspector_exist?).and_return(true)
+      expect(Machinery::Ui).to receive(:puts).with(/Using helper binary for inspection/)
+      expect(subject.determine_inspector).to eq("binary")
+    end
+  end
+
+  describe "inspect_using_helper" do
+    it "copies, calls, and removes the helper binary" do
+      allow(system).to receive(:arch).and_return("x86_64")
+      allow(subject).to receive(:binary_inspector_exist?).and_return(true)
+      expect(system).to receive(:inject_file)
+      expect(system).to receive(:run_command).and_return("{}")
+      expect(system).to receive(:remove_file)
+
+      subject.inspect_using_helper
     end
   end
 end
