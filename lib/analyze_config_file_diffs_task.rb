@@ -33,6 +33,8 @@ class AnalyzeConfigFileDiffsTask
       raise Machinery::Errors::MissingExtractedFiles.new(description, ["config_files"])
     end
 
+    check_for_zypper_version
+
     with_repositories(description) do |zypper|
       file_store = description.scope_file_store("analyze/config_file_diffs")
       file_store.create
@@ -68,6 +70,17 @@ class AnalyzeConfigFileDiffsTask
         end
       end
       Machinery::Ui.puts "done"
+    end
+  end
+
+  def check_for_zypper_version
+    supported_zypper_version = 9.17
+    cheetah = Cheetah.run("zypper", "--version", stdout: :capture)
+    current_zypper_version = /[1-9]\.([1-9]\.[1-9].*)/.match(cheetah)
+    if LocalSystem.os["name"] == "openSUSE 13.1 (Bottle)" &&
+        supported_zypper_version > current_zypper_version[1].to_f
+      raise Machinery::Errors::AnalysisFailed,
+            "Can not analyze the system description. Zypper version is outdated."
     end
   end
 
