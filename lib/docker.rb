@@ -48,8 +48,16 @@ class Docker < Exporter
   end
 
   def dockerfile_content
-    <<EOF
+    content = <<EOF
 FROM #{base_image}
 EOF
+
+    content << packages
+
+    content
+  end
+
+  def packages
+    "RUN zypper -n in --force-resolution " + @system_description.packages.map(&:name).join(" ")
   end
 end
