@@ -432,6 +432,34 @@ class Cli
     end
   end
 
+
+
+  desc  "Export system description as Docker container"
+  long_desc <<-LONGDESC
+    Export system description as Docker container
+
+    The Dockerfile and additional data will be placed in a subdirectory at the given location.
+  LONGDESC
+  arg "NAME"
+  command "export-docker" do |c|
+    c.flag ["docker-dir", :k], type: String, required: true,
+      desc: "Location where the container will be stored", arg_name: "DIRECTORY"
+    c.switch :force, default_value: false, required: false, negatable: false,
+      desc: "Overwrite existing description"
+
+    c.action do |global_options,options,args|
+      name = shift_arg(args, "NAME")
+      description = SystemDescription.load(name, system_description_store)
+      exporter = Docker.new(description)
+
+      task = ExportTask.new(exporter)
+      task.export(
+        File.expand_path(options["docker-dir"]),
+        force: options[:force]
+      )
+    end
+  end
+
   desc "Export system description as AutoYaST profile"
   long_desc <<-LONGDESC
     Export system description as AutoYaST profile

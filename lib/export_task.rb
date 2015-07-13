@@ -50,13 +50,11 @@ class ExportTask
             "Permission denied. Directory '#{output_dir}' is not writable")
     end
 
-    if @exporter.system_description["unmanaged_files"]
-      filters = File.read(
-        File.join(
-          Machinery::ROOT,
-          "export_helpers/unmanaged_files_#{@exporter.name}_excludes"
-        )
-      )
+
+    unmanaged_files_filter = File.join(
+      Machinery::ROOT, "export_helpers/unmanaged_files_#{@exporter.name}_excludes")
+    if File.exists?(unmanaged_files_filter) && @exporter.system_description["unmanaged_files"]
+      filters = File.read(unmanaged_files_filter)
       Machinery::Ui.puts(
         "\nUnmanaged files following these patterns are not exported:\n#{filters}\n"
       )

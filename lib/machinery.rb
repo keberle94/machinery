@@ -99,6 +99,7 @@ require_relative "man_task"
 require_relative "comparison"
 require_relative "serve_html_task"
 require_relative "file_diff"
+require_relative "docker"
 
 Dir[File.join(Machinery::ROOT, "plugins", "**", "*.rb")].each { |f| require(f) }
 
