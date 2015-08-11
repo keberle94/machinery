@@ -699,6 +699,36 @@ Backtrace:
       end
       expect(captured_machinery_stderr).to include(expected_cheetah_out)
     end
+
+    it "shows a special bug report message for SLES" do
+      allow(LocalSystem).to receive(:os).and_return(OsSles12.new)
+
+      begin
+        raise
+      rescue => e
+        expect{ Cli.handle_error(e) }.to raise_error
+      end
+
+      expect(captured_machinery_output).to include(
+        "Machinery experienced an unexpected error. Please file a " \
+        "bug report at: https://www.suse.com/mysupport"
+      )
+    end
+
+    it "shows the usual bug report message for openSUSE" do
+      allow(LocalSystem).to receive(:os).and_return(OsOpenSuse13_1.new)
+
+      begin
+        raise
+      rescue => e
+        expect{ Cli.handle_error(e) }.to raise_error
+      end
+
+      expect(captured_machinery_output).to include(
+        "Machinery experienced an unexpected error. Please file a " \
+        "bug report at: https://github.com/SUSE/machinery/issues/new\n"
+      )
+    end
   end
 
   private
