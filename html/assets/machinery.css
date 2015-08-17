@@ -28,6 +28,10 @@ a.both_anchor {
   visibility: hidden;
 }
 
+a.both_link {
+    color: #CC3300;
+}
+
 .scope_content{border-bottom: 1px dotted #d58512}
 
 .scope-summary {
@@ -119,7 +123,7 @@ h2 {
 }
 
 a, a:hover {
-  color: #7A7570;
+  color: #CC3300;
 }
 
 .pad-top {
