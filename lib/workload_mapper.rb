@@ -44,7 +44,7 @@ class WorkloadMapper
     Dir["#{File.expand_path(workload_mapper_path)}/*.rb"].each do |file_path|
       mapper = WorkloadMapperDSL.new(system_description)
       workload = mapper.check_clue(File.read(file_path))
-      workloads.merge!(workload.to_h)
+      workloads.merge!(workload.to_h) if workload.to_h
     end
     workloads
   end
