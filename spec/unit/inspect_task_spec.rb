@@ -113,10 +113,11 @@ describe InspectTask, "#inspect_system" do
   end
 
   it "uses the specified remote user to access the system" do
-    expect(Inspector).to receive(:for).at_least(:once).times.with("foo").and_return(FooInspector)
-    expect(System).to receive(:for).with(anything, "machinery")
+    expect(Inspector).to receive(:for).at_least(:once).times.with("
+    foo").and_return(FooInspector)
+    expect(System).to receive(:for).with(anything, "machinery", nil)
 
-    inspect_task.inspect_system(store, host, name, current_user_non_root, ["foo"], Filter.new,
+    inspect_task.inspect_system(store, host, name, current_user_non_root, ["\n    foo"], Filter.new,
       remote_user: "machinery")
   end
 

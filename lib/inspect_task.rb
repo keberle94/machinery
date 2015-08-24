@@ -17,7 +17,8 @@
 
 class InspectTask
   def inspect_system(store, host, name, current_user, scopes, filter, options = {})
-    system = System.for(host, options[:remote_user])
+    container_type = :docker if options[:docker_container]
+    system = System.for(host, options[:remote_user], container_type)
     check_root(system, current_user)
 
     description, failed_inspections = build_description(store, name, system,

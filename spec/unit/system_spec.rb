@@ -31,6 +31,13 @@ describe System do
       expect(remote_system.host).to eql("somehost")
       expect(remote_system.remote_user).to eq("machinery")
     end
+
+    it "returns a Docker System when docker-container switch is given" do
+      container = System.for("foo", "root", :docker)
+
+      expect(container).to be_a(DockerSystem)
+      expect(container.host).to eql("foo")
+    end
   end
 
   describe "#create_archive" do
