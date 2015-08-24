@@ -16,7 +16,14 @@
 # you may find current contact information at www.suse.com
 
 class DockerSystem < System
+  attr_accessor :host
+
   @@os = nil
+
+  def initialize(host)
+    @host = host
+  end
+
 
   class << self
     def os
@@ -109,13 +116,49 @@ EOF
   end
 
   def run_command(*args)
-    if args.last.is_a?(Hash) && args.last[:disable_logging]
+    options = args.last.is_a?(Hash) ? args.pop : {}
+
+    # There are three valid ways how to call Cheetah.run, whose interface this
+    # method mimics. The following code ensures that the "commands" variable
+    # consistently (in all three cases) contains an array of arrays specifying
+    # commands and their arguments.
+    #
+    # See comment in Cheetah.build_commands for more detailed explanation:
+    #
+    #   https://github.com/openSUSE/cheetah/blob/0cd3f88c1210305e87dfc4852bb83040e82d783f/lib/cheetah.rb#L395
+    #
+    commands = args.all? { |a| a.is_a?(Array) } ? args : [args]
+
+    # When ssh executes commands, it passes them through shell expansion. For
+    # example, compare
+    #
+    #   $ echo '$HOME'
+    #   $HOME
+    #
+    # with
+    #
+    #   $ ssh localhost echo '$HOME'
+    #   /home/dmajda
+    #
+    # To mitigate that and maintain usual Cheetah semantics, we need to protect
+    # the command and its arguments using another layer of escaping.
+    escaped_commands = commands.map do |command|
+      command.map { |c| Shellwords.escape(c) }
+    end
+
+    # Arrange the commands in a way that allows piped commands trough ssh.
+    piped_args = escaped_commands[0..-2].flat_map do |command|
+      [*command, "|"]
+    end + escaped_commands.last
+
+    if options[:disable_logging]
       cheetah_class = Cheetah
     else
       cheetah_class = LoggedCheetah
     end
+
     with_utf8_locale do
-      cheetah_class.run(*args)
+      cheetah_class.run(*["docker", "exec", "opensuse", "bash", "-c", piped_args.compact.flatten.join(" "), options])
     end
   end
 
@@ -123,29 +166,19 @@ EOF
   # Machinery::Errors::RsyncFailed exception when it's not successful. Destination is
   # the directory where to put the files.
   def retrieve_files(filelist, destination)
-    begin
-      LoggedCheetah.run(
-        "rsync",
-        "--chmod=go-rwx",
-        "--files-from=-",
-        "/",
-        destination,
-        stdout: :capture,
-        stdin: filelist.join("\n")
-        )
-    rescue Cheetah::ExecutionFailed => e
-      raise Machinery::Errors::RsyncFailed.new(
-      "Could not rsync files from localhost. \n" \
-      "Error: #{e}\n" \
-      "If you lack read permissions on some files you may want to retry as user root or specify\n" \
-      "the fully qualified host name instead of localhost in order to connect as root via ssh."
-    )
+    filelist.each do |file|
+      destination_path = File.join(destination, file)
+
+      FileUtils.mkdir_p(File.dirname(destination_path))
+      output = File.open(destination_path, "w+")
+      run_command("cat", file, stdout: output)
+      LoggedCheetah.run("chmod", "og-rwx", destination_path)
     end
   end
 
   # Reads a file from the System. Returns nil if it does not exist.
   def read_file(file)
-    File.read(file)
+    run_command("cat", file, stdout: :capture)
   rescue Errno::ENOENT
     # File not found, return nil
     return
@@ -163,10 +196,10 @@ EOF
 
   # Removes a file from the System
   def remove_file(file)
-    File.delete(file) if File.exist?(file)
+    run_command("rm", file)
   rescue => e
     raise Machinery::Errors::RemoveFileFailed.new(
-      "Could not remove file '#{file}' on local system'.\n" \
+      "Could not remove file '#{file}' from docker system'.\n" \
       "Error: #{e}"
     )
   end
