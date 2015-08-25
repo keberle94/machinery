@@ -14,13 +14,27 @@
 #
 # To contact SUSE about this file by physical or electronic mail,
 # you may find current contact information at www.suse.com
-
+require "cheetah"
+require 'byebug'
 class DockerSystem < System
   attr_accessor :host
 
   def initialize(host)
     @host = host
+    check_host
   end
+
+  def check_host
+    all_container_ids = []
+    running_docker_containers = Cheetah.run("docker", "ps", stdout: :capture)
+    running_docker_containers.each_line do |container_id|
+      all_container_ids << container_id.split(" ").first
+    end
+    all = all_container_ids.drop(1)
+    if all.include?(@host) == false
+        raise Machinery::Errors::InspectionFailed.new "Can not inspect container: Invaild Container ID"
+    end
+   end
 
   def requires_root?
     false
