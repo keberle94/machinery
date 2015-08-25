@@ -22,6 +22,10 @@ class DockerSystem < System
     @host = host
   end
 
+  def requires_root?
+    false
+  end
+
   def run_command(*args)
     options = args.last.is_a?(Hash) ? args.pop : {}
 
