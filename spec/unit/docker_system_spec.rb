@@ -18,23 +18,45 @@
 require_relative "spec_helper"
 
 describe DockerSystem do
-  describe "#check_host" do
-    let(:docker_ps_output) { <<-EOF
+  let(:docker_ps_output) { <<-EOF
 CONTAINER ID        IMAGE                     COMMAND                CREATED             STATUS              PORTS               NAMES
 c311f5336878        opensuse/mariadb:latest   "/bin/bash /scripts/   2 hours ago         Up 2 hours          3306/tcp            bla_db_1
 EOF
 }
 
+  describe "#check_host" do
+
     it "raises an error if container id does not exist" do
-      expect(Cheetah).to receive(:run).with("docker", "ps", stdout: :capture).
+      expect(Cheetah).to receive(:run).with("docker", "ps", "-a", stdout: :capture).
         and_return(docker_ps_output)
 
       expect { DockerSystem.new("bla") }.to raise_error(Machinery::Errors::InspectionFailed)
     end
 
     it "does not raise an error if container id is valid" do
-      expect(Cheetah).to receive(:run).with("docker", "ps", stdout: :capture).
-        and_return(docker_ps_output)
+      expect(Cheetah).to receive(:run).with("docker", "ps", "-a", stdout: :capture).
+        and_return(docker_ps_output).twice
+
+      expect { DockerSystem.new("c311f5336878") }.not_to raise_error
+    end
+  end
+
+  describe "#check_if_host_is_running" do
+    let(:container_not_running) { <<EOF
+CONTAINER ID        IMAGE                     COMMAND                CREATED             STATUS                           PORTS               NAMES
+c311f5336878        opensuse/mariadb:latest   "/bin/bash /scripts/   3 hours ago         Exited (137) About an hour ago                       bla_db_1
+EOF
+}
+    it "raises an error if container is not running" do
+      expect(Cheetah).to receive(:run).with("docker", "ps", "-a", stdout: :capture).
+        and_return(container_not_running).twice
+
+      expect { DockerSystem.new("c311f5336878") }.to raise_error(Machinery::Errors::InspectionFailed)
+    end
+
+    it "does not raise an error if container id is valid" do
+      expect(Cheetah).to receive(:run).with("docker", "ps", "-a", stdout: :capture).
+        and_return(docker_ps_output).twice
 
       expect { DockerSystem.new("c311f5336878") }.not_to raise_error
     end

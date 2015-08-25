@@ -22,11 +22,12 @@ class DockerSystem < System
   def initialize(host)
     @host = host
     check_host
+    check_if_container_is_running
   end
 
   def check_host
     all_container_ids = []
-    running_docker_containers = Cheetah.run("docker", "ps", stdout: :capture)
+    running_docker_containers = Cheetah.run("docker", "ps", "-a", stdout: :capture)
     running_docker_containers.each_line do |container_id|
       all_container_ids << container_id.split(" ").first
     end
@@ -34,7 +35,23 @@ class DockerSystem < System
     if all.include?(@host) == false
         raise Machinery::Errors::InspectionFailed.new "Can not inspect container: Invaild Container ID"
     end
-   end
+  end
+
+  def check_if_container_is_running
+    lines = []
+    all_containers = Cheetah.run("docker", "ps", "-a", stdout: :capture)
+    all_containers.each_line do |container|
+      lines << container.split(" ")
+      if container.start_with?(@host)
+         if container.split(" ")[7] == "Exited"
+           raise Machinery::Errors::InspectionFailed.new(
+             "Container is not running currently. Start container before the" \
+             " inspection by running:\n`docker-compose up #{@host}`"
+           )
+         end
+      end
+    end
+  end
 
   def requires_root?
     false
