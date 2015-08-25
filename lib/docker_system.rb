@@ -69,7 +69,8 @@ class DockerSystem < System
     end
 
     with_utf8_locale do
-      cheetah_class.run(*["docker", "exec", "opensuse", "bash", "-c", piped_args.compact.flatten.join(" "), options])
+      cheetah_class.run(*["docker", "exec", host, "bash", "-c", piped_args.compact.flatten.join(" "), options])
+
     end
   end
 
