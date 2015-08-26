@@ -46,7 +46,7 @@ class DockerSystem < System
          if container.split(" ")[7] == "Exited"
            raise Machinery::Errors::InspectionFailed.new(
              "Container is not running currently. Start container before the" \
-             " inspection by running:\n`docker-compose up #{@host}`"
+             " inspection by running:\n`docker start #{@host}`"
            )
          end
       end
