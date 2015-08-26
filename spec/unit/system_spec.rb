@@ -33,10 +33,10 @@ describe System do
     end
 
     it "returns a Docker System when docker-container switch is given" do
-      container = System.for("foo", "root", :docker)
+      container = System.for("c311f5336878", "root", :docker)
 
       expect(container).to be_a(DockerSystem)
-      expect(container.host).to eql("foo")
+      expect(container.host).to eql("c311f5336878")
     end
   end
 

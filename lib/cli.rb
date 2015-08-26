@@ -156,8 +156,9 @@ class Cli
   def self.show_filter_note(scopes, filter)
     if scopes.any? { |scope| !filter.element_filters_for_scope(scope).empty? }
       Machinery::Ui.puts "\nNote: There are filters being applied during inspection. " \
-        "(Use `--verbose` option to show the filters)\n\n"
+        "(Use `--verbose` option to show the filters)\n" \
     end
+
   end
 
   def self.shift_arg(args, name)
@@ -547,6 +548,9 @@ class Cli
         Machinery::Ui.puts filter.to_array.join("\n") + "\n\n"
       else
         show_filter_note(scope_list, filter)
+        if options["docker-container"] == true
+          Machinery::Ui.puts "Note: Inpecting containers excludes the Services scope.\n\n"
+        end
       end
 
       inspector_task.inspect_system(

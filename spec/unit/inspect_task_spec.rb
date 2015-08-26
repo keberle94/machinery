@@ -141,6 +141,19 @@ describe InspectTask, "#inspect_system" do
     expect(description.foo).to eql(expected)
   end
 
+  it "excludes service scope if host is a container" do
+    container_description = inspect_task.inspect_system(
+      store,
+      "c311f5336878",
+      name,
+      current_user_non_root,
+      ["foo", "services", "bar"],
+      Filter.new,
+      docker_container: true
+    )
+    expect(container_description["services"]).to eq(nil)
+  end
+
   describe "in case of inspection errors" do
     capture_machinery_output
 
