@@ -43,7 +43,7 @@ class DockerSystem < System
     all_containers.each_line do |container|
       lines << container.split(" ")
       if container.start_with?(@host)
-         if container.split(" ")[7] == "Exited"
+        if container.split(" ").include?("Exited")
            raise Machinery::Errors::InspectionFailed.new(
              "Container is not running currently. Start container before the" \
              " inspection by running:\n`docker start #{@host}`"

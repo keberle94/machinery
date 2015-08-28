@@ -14,7 +14,7 @@
 #
 # To contact SUSE about this file by physical or electronic mail,
 # you may find current contact information at www.suse.com
-
+require 'byebug'
 class RepositoriesInspector < Inspector
   has_priority 40
   def initialize(system, description)
@@ -70,6 +70,7 @@ class RepositoriesInspector < Inspector
   end
 
   def inspect_yum_repositories
+    byebug
     script = File.read(File.join(Machinery::ROOT, "helpers", "yum_repositories.py"))
     begin
       repositories = JSON.parse(system.run_command(
