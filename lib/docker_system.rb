@@ -15,7 +15,6 @@
 # To contact SUSE about this file by physical or electronic mail,
 # you may find current contact information at www.suse.com
 require "cheetah"
-require 'byebug'
 class DockerSystem < System
   attr_accessor :host
 
