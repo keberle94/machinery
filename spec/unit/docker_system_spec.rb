@@ -63,7 +63,7 @@ EOF
   end
 
   describe "#run_command" do
-    it "pipes stdin" do
+    it "runs the command using docker exec" do
       allow_any_instance_of(DockerSystem).to receive(:check_host)
       allow_any_instance_of(DockerSystem).to receive(:check_if_container_is_running)
       system = DockerSystem.new("c311f5336878")
