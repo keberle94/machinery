@@ -73,7 +73,7 @@ class RepositoriesInspector < Inspector
     script = File.read(File.join(Machinery::ROOT, "helpers", "yum_repositories.py"))
     begin
       repositories = JSON.parse(system.run_command(
-        "python", stdin: script
+        "bash", "-c", "python", stdin: script, stdout: :capture
       ).split("\n").last).map { |element| Repository.new(element) }
       repositories.each do |repository|
         if repository.url.empty?
