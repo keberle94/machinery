@@ -58,6 +58,7 @@ class DockerSystem < System
   end
 
   def run_command(*args)
+    #debugger
     options = args.last.is_a?(Hash) ? args.pop : {}
 
     # There are three valid ways how to call Cheetah.run, whose interface this
@@ -98,7 +99,6 @@ class DockerSystem < System
     else
       cheetah_class = LoggedCheetah
     end
-
     with_utf8_locale do
       cheetah_class.run(*["docker", "exec", host, "bash", "-c", piped_args.compact.flatten.join(" "), options])
 

@@ -70,11 +70,10 @@ class RepositoriesInspector < Inspector
   end
 
   def inspect_yum_repositories
-    byebug
     script = File.read(File.join(Machinery::ROOT, "helpers", "yum_repositories.py"))
     begin
       repositories = JSON.parse(system.run_command(
-        "bash", "-c", "python", stdin: script, stdout: :capture
+        "python", stdin: script
       ).split("\n").last).map { |element| Repository.new(element) }
       repositories.each do |repository|
         if repository.url.empty?
