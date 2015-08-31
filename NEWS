@@ -3,6 +3,7 @@
 * Fix for unmanaged-file inspector to not mark directories as unmanaged if they
   only consist managed sub directories
 * Add experimental `containerize` command
+* Add inspection of RPM based Docker containers
 
 ## Version 1.11.2 - Thu Jul 30 14:42:44 CEST 2015 - thardeck@suse.de
 
