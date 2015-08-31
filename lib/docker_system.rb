@@ -100,7 +100,7 @@ class DockerSystem < System
       cheetah_class = LoggedCheetah
     end
     with_utf8_locale do
-      cheetah_class.run(*["docker", "exec", host, "bash", "-c", piped_args.compact.flatten.join(" "), options])
+      cheetah_class.run(*["docker", "exec", "-i", host, "bash", "-c", piped_args.compact.flatten.join(" "), options])
 
     end
   end
