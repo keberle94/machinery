@@ -275,8 +275,20 @@ class SystemDescription < Machinery::Object
   end
 
   def has_file?(name)
-    self["config_files"].files.any? { |file| file.name == name } ||
+    found = self["config_files"].files.any? { |file| file.name == name } ||
       self["unmanaged_files"].files.any? { |file| file.name == name }
+    return true if found
+
+    file = self["unmanaged_files"].files.find { |file| file.name == File.join(File.dirname(name), '') }
+    if file && file.directory?
+      Dir.mktmpdir do |dir|
+        self.unmanaged_files.export_files_as_tarballs(dir)
+        tgz_file = File.join(dir, "trees", "#{File.dirname(name)}.tgz")
+        Cheetah.run("tar", "zxf", tgz_file, "-C", dir)
+        found = File.exists?(File.join(dir, name))
+      end
+    end
+    found
   end
 
   def read_config(path, key)
