@@ -81,7 +81,7 @@ class RepositoriesInspector < Inspector
           )
         end
       end
-    rescue JSON::ParserError, Cheetah::ExecutionFailed
+    rescue JSON::ParserError
       raise Machinery::Errors::InspectionFailed.new("Extraction of YUM repositories failed.")
     rescue Cheetah::ExecutionFailed => e
       raise Machinery::Errors::InspectionFailed.new(
