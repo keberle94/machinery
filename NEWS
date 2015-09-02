@@ -1,5 +1,6 @@
 # Machinery Release Notes
 
+* Speed up inspection by reusing the ssh connection between remote commands
 * The x86_64 machinery-helper is now shipped with machinery. It speeds up
   inspection of unmanaged-files when the files are not extracted
 * Fix for unmanaged-file inspector to not mark directories as unmanaged if they
