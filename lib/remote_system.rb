@@ -19,6 +19,9 @@ class RemoteSystem < System
   attr_accessor :host
   attr_accessor :remote_user
 
+  SSH_BASIC_OPTIONS = ["-o", "ControlMaster=auto", "-o",
+    "ControlPath=~/.ssh/socket%r@%h-%p", "-o", "ControlPersist=600"]
+
   def initialize(host, remote_user = "root")
     @host = host
     @remote_user = remote_user
@@ -74,7 +77,8 @@ class RemoteSystem < System
 
     sudo = ["sudo", "-n"] if options[:privileged] && remote_user != "root"
     cmds = [
-      "ssh", "#{remote_user}@#{host}", sudo, "LC_ALL=en_US.utf8", *piped_args, options
+      "ssh", *SSH_BASIC_OPTIONS, "#{remote_user}@#{host}", sudo, "LC_ALL=en_US.utf8", *piped_args,
+      options
     ].compact.flatten
     cheetah_class.run(*cmds)
   rescue Cheetah::ExecutionFailed => e
@@ -88,7 +92,8 @@ class RemoteSystem < System
   # Tries to run the noop-command(:) on the remote system as root (without a password or passphrase)
   # and raises an Machinery::Errors::SshConnectionFailed exception when it's not successful.
   def connect
-    LoggedCheetah.run "ssh", "-q", "-o", "BatchMode=yes", "#{remote_user}@#{host}", ":"
+    LoggedCheetah.run "ssh", *SSH_BASIC_OPTIONS, "-q", "-o", "BatchMode=yes",
+      "#{remote_user}@#{host}", ":"
   rescue Cheetah::ExecutionFailed
     raise Machinery::Errors::SshConnectionFailed.new(
       "Could not establish SSH connection to host '#{host}'. Please make sure that " \
