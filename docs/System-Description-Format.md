@@ -751,6 +751,6 @@ version of Machinery.
 
 ### Version 4
 
-* Schema version 4 adds a "type" attribute to [[changed-managed-files|System Description Format#changed-managed-files]] and [[config-files|System Description Format#config-files]] with the possible values "file", "directory" and "link".
+* Schema version 4 adds a "type" attribute to [changed-managed](#changed-managed-files) and [[config-files|System Description Format#config-files]] with the possible values "file", "directory" and "link".
 
 * For both scopes an additional attribute "target_path" was introduced which will be only added in case of the file type "link" to store the destination.
